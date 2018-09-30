@@ -7,4 +7,3 @@ target
 *.iml
 .idea
 *.factorypath
-bin-debug
