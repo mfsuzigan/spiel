@@ -1,0 +1,9 @@
+1. Certifique-se que sua máquina tem os dois programas da pasta "instale-nos_antes" já instalados: o Adobe Air e o Java. Se não, use os arquivos para instalá-los.
+
+2. Rode o arquivo "Instalar o Spiel" e confirme todas as opções.
+
+3. O Spiel será iniciado automaticamente. FECHE-O.
+
+4. Vá até a pasta de instalação do programa na sua máquina (usualmente, C:\Arquivos de programas\spiel), em seguida, na pasta "resources" e crie um atalho para o arquivo "Spiel+Auxiliar de Impressao.bat", da seguinte maneira: com o botão direito, clique sobre o arquivo e segure, soltando-o sobre a área de trabalho. Nas opções que aparecem, clique em "Criar atalho".
+
+5. Inicialize o programa usando este atalho (SEMPRE, para que haja suporte à impressão automática de comprovantes).

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="this.setFocus();povoarCamposDesfazer();" showCloseButton="true" visible="true" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="582" height="386" title="Desfazer ações" borderColor="#FFDC73" borderAlpha="100" xmlns:ns1="*">
+	<mx:Script source="funcoesDesfazer.as"/>
+	<mx:List id="sugestoesPlaca" width="81" height="54" left="134" top="112" visible="false"/>
+	<mx:List id="sugestoesIdMovimentacao" width="54" height="44" left="410" top="112" visible="false"/>
+	<mx:Text height="38" textAlign="left" left="10" top="10" right="10">
+		<mx:text>Selecione uma das movimentações abaixo e clique no botão &quot;Desfazer&quot; para retornar o banco de dados ao estado anterior a esta ação.</mx:text>
+	</mx:Text>
+	<ns1:TabelaMovimentacoes itemClick="tratarItemClick(event)" left="10" right="10" bottom="10" top="98" id="tabelaDesfazer"/>
+	<mx:Button click="confirmarDesfazer()" id="botaoDesfazer" y="57" label="Desfazer" horizontalCenter="0" width="130" enabled="false">
+		<mx:icon>@Embed(source='../resources/icones/arrow_undo.png')</mx:icon>
+	</mx:Button>
+</mx:TitleWindow>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AdvancedDataGrid designViewDataType="flat" xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:utils="flash.utils.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.AbstractConsumer;
+			import mx.collections.ArrayCollection;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.core.Application;
+			
+			import com.spiel.Conexao;
+			import com.spiel.Utils;
+			import com.spiel.Cor;
+		
+			import flash.data.SQLResult;
+			import flash.data.SQLStatement;
+			import flash.events.SQLErrorEvent;
+			import flash.events.SQLEvent;
+			import flash.utils.Timer;
+			import mx.controls.Alert;
+			
+			// Flags de cobrança:
+			
+			private const ESI:Number = 0; // Entrada, saída, isentos
+			private const ES:Number = 1; // Entrada, saída
+			private const EI:Number = 2; // Entrada, isentos
+			private const SI:Number = 3; // Saída, isentos
+			private const E:Number = 4;
+			private const S:Number = 5;
+			private const I:Number = 6;
+			private const NA:Number = 7; // Não marcado
+			
+			private var timerPatio:Timer = new Timer(3000, 0);
+			
+			public function povoar	(	placa:String, marca:String, modelo:String, nomeCor:String,
+										horarioInicioH:String, horarioInicioM:String,
+										horarioTerminoH:String, horarioTerminoM:String, 
+										tempoPatioMinH:String, tempoPatioMinM:String,
+										tempoPatioMaxH:String, tempoPatioMaxM:String,
+										flagCobranca:Number
+									):void
+			{
+				var comandoRecuperar:String =
+					"SELECT " +
+						"MOVIMENTACOES.ID, " +
+						"MOVIMENTACOES.T AS T0, " +
+						"MOVIMENTACOES.PLACA AS P, " + 
+						"MOVIMENTACOES.CRED_DEDUZIDO, " + 
+						"MOVIMENTACOES.TARIFA, " +
+						"VEICULOS.ISENTO, " + 
+						"VEICULOS.CREDITO, " +
+						"MODELOS.NOME AS MODELO, " +
+						"MARCAS.NOME AS MARCA, " +
+						"CORES.NOME AS COR " +
+					"FROM	MOVIMENTACOES, VEICULOS, MODELOS, MARCAS, CORES " +
+					"WHERE	MOVIMENTACOES.PLACA = VEICULOS.PLACA " +
+					"AND	VEICULOS.ID_MODELO = MODELOS.ID " +
+					"AND	VEICULOS.ID_COR = CORES.ID " +
+					"AND	MODELOS.ID_MARCA = MARCAS.ID " +
+					"AND	MOVIMENTACOES.CODIGO = 1 " +
+					"AND	T0 = (SELECT MAX(T) FROM MOVIMENTACOES WHERE PLACA = P) ";
+					
+				if (placa != "")
+				{
+					comandoRecuperar += "AND P = '" + placa + "' ";
+				}
+				
+				if (marca != "Todas")
+				{
+					comandoRecuperar += "AND MARCA = '" + marca + "' ";
+				}
+				
+				if (modelo != "Todos")
+				{
+					comandoRecuperar += "AND MODELO = '" + modelo + "' ";
+				}
+				
+				if (nomeCor != "Todas")
+				{
+					comandoRecuperar += "AND COR = '" + nomeCor + "' ";
+				}
+				
+				if (horarioInicioH != "" && horarioTerminoH != "")
+				{
+					comandoRecuperar += "AND T0 BETWEEN '" 
+								+ Utils.getStringHojeComHorario(horarioInicioH, horarioInicioM)
+								+ "' AND '"
+								+ Utils.getStringHojeComHorario(horarioTerminoH, horarioTerminoM)
+								+ "' ";
+					//comandoRecuperar += "AND ((T0 % 1000000000)/100000) BETWEEN " + horarioInicio + " AND " + horarioTermino + " ";
+				}
+				
+				else if (horarioInicioH != "" && horarioTerminoH == "")
+				{
+					comandoRecuperar += "AND TO > '" + Utils.getStringHojeComHorario(horarioInicioH, horarioInicioM) + "' ";
+				}
+				
+				else if (horarioTerminoH != "" && horarioInicioH == "")
+				{
+					comandoRecuperar += "AND TO < '" + Utils.getStringHojeComHorario(horarioTerminoH, horarioTerminoM) + "' ";
+				}
+				
+				if (tempoPatioMinH != "" && tempoPatioMaxH != "")
+				{
+					comandoRecuperar += "AND T0 BETWEEN '" 
+								+ Utils.subtrairHorarios(Utils.getStringAgora(true), tempoPatioMaxH, tempoPatioMaxM)
+								+ "' AND '" 
+								+ Utils.subtrairHorarios(Utils.getStringAgora(true), tempoPatioMinH, tempoPatioMinM)
+								+ "' ";
+				}
+				
+				else if (tempoPatioMinH != "")
+				{
+					//tempo mínimo
+					comandoRecuperar += "AND T0 < '" 
+								+ Utils.subtrairHorarios(Utils.getStringAgora(true), tempoPatioMinH, tempoPatioMinM)
+								+ "' ";
+				}
+				
+				else if (tempoPatioMaxH != "")
+				{
+					//tempo máximo
+					comandoRecuperar += "AND T0 > '" 
+								+ Utils.subtrairHorarios(Utils.getStringAgora(true), tempoPatioMaxH, tempoPatioMaxM)
+								+ "' ";
+				}
+				
+				comandoRecuperar += "AND ( ";
+				
+				if (flagCobranca == ESI)
+				{
+					comandoRecuperar += 
+					"(MOVIMENTACOES.TARIFA <> 0 AND VEICULOS.ISENTO <> 1) " +
+				 	"OR	(MOVIMENTACOES.TARIFA = 0 AND VEICULOS.ISENTO <> 1) " +
+					"OR	(VEICULOS.ISENTO = 1) ";
+				}
+				
+				else if (flagCobranca == ES)
+				{
+					comandoRecuperar += 
+					"(MOVIMENTACOES.TARIFA <> 0 AND VEICULOS.ISENTO <> 1) " +
+				 	"OR	(MOVIMENTACOES.TARIFA = 0 AND VEICULOS.ISENTO <> 1) ";
+				}
+				
+				else if (flagCobranca == EI)
+				{
+					comandoRecuperar += 
+					"(MOVIMENTACOES.TARIFA <> 0 AND VEICULOS.ISENTO <> 1) " +
+					"OR	(VEICULOS.ISENTO = 1) ";
+				}
+				
+				else if (flagCobranca == SI)
+				{
+					comandoRecuperar += 
+					"(MOVIMENTACOES.TARIFA = 0 AND VEICULOS.ISENTO <> 1) " +
+					"OR	(VEICULOS.ISENTO = 1) ";
+				}
+				
+				else if (flagCobranca == E)
+				{
+					comandoRecuperar += 
+					"(MOVIMENTACOES.TARIFA <> 0 AND VEICULOS.ISENTO <> 1) " +
+					"AND (VEICULOS.ISENTO <> 1) ";
+				}
+				
+				else if (flagCobranca == S)
+				{
+					comandoRecuperar += 
+					"(MOVIMENTACOES.TARIFA = 0 AND VEICULOS.ISENTO <> 1) " +
+					"AND (VEICULOS.ISENTO <> 1) ";
+				}
+				
+				else if (flagCobranca == I)
+				{
+					comandoRecuperar += 
+					"VEICULOS.ISENTO = 1";
+				}
+				
+				else if (flagCobranca == NA)
+				{
+					comandoRecuperar += 
+					"0 = 1 ";
+				}
+			
+				comandoRecuperar += ") ORDER BY T0 DESC;";
+			
+				var stmt:SQLStatement = new SQLStatement();
+				var r:SQLResult;
+				var dataProvider:Array = new Array();
+				
+				stmt.text = comandoRecuperar;
+				stmt.sqlConnection = new Conexao();
+				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+				stmt.execute();				
+				
+				this.styleFunction = funcaoEstilo;
+				this.dataProvider = dataProvider;
+	
+				if (!timerPatio.hasEventListener(TimerEvent.TIMER))
+				{	
+					timerPatio.addEventListener(TimerEvent.TIMER, funcaoTimerPatio);
+				}
+				
+				//timerPatio.start();
+					
+				function tratadoraRecuperar(event:SQLEvent):void
+				{
+					r = stmt.getResult();
+						
+					try
+					{	
+						if (r.data is Object)
+						{
+							
+							for (var i:Number = 0; i < r.data.length; i++)
+							{
+								var tupla:Object = new Object();
+								
+								tupla.placa = r.data[i].P.toString();
+								tupla.marca = r.data[i].MARCA.toString();								
+								tupla.modelo = r.data[i].MODELO.toString();								
+								tupla.cor = r.data[i].COR.toString();								
+								tupla.credito = Utils.formatarDinheiro(r.data[i].CREDITO.toString());
+								tupla.dataEntrada = Utils.dataFormatada(r.data[i].T0.toString()).substr(0, 10);
+								tupla.dataEntrada += " " + Utils.dataFormatada(r.data[i].T0.toString()).substr(11, 18);
+								tupla.codigo = r.data[i].ID.toString();
+								//tupla.tempoNoPatio = (Number(r.data[i].ID.toString()) * 12).toString();
+								tupla.t = r.data[i].T0.toString();
+								
+								var dataMov:Date = Utils.getDate(r.data[i].T0.toString());
+				            	var agora:Date = new Date();
+				            	            	
+				            	var intervalo:Number = (agora.time - dataMov.time)/1000;				            	
+				      			var segundos:Number = Math.ceil(intervalo%60);      			
+				      			var minInterm:Number = Math.floor(intervalo/60);
+				      			var minutos:Number = Math.ceil(minInterm%60);
+				      			var horas:Number = Math.floor(minInterm/60);
+				      			
+				      			    			
+				      			if (horas > Application.application.maximoHorasNoEstacionamento)
+				      			{
+				      				Application.application.maximoHorasNoEstacionamento = horas;
+				      			}
+
+				      			tupla.tempoNoPatio =  	(horas < 10 ? "0" : "")            										
+	            										+ horas.toString() 
+				      									+ ":" 
+				      									+ (minutos < 10 ? "0" : "")
+				      									+ minutos.toString()
+				      									+ ":"
+				      									+ (segundos < 10 ? "0" : "")
+				      									+ segundos.toString();
+								
+								if (r.data[i].ISENTO.toString() == "1")
+								{
+									tupla.cobranca = "I";
+								}
+								
+								else if (r.data[i].TARIFA.toString() != "0")
+								{
+									tupla.cobranca = "E";
+								}
+								
+								else
+								{
+									tupla.cobranca = "S";
+								}
+								
+								dataProvider.push(tupla);
+							}
+						}
+					}
+					
+					catch (erro:Error)
+					{
+						Alert.show("Erro ao tentar recuperar veículo no pátio: " + erro.getStackTrace());
+					}
+				}
+				
+				function tratadoraRecuperarErro(event:SQLErrorEvent):void
+				{
+					Alert.show("Erro ao tentar recuperar veículo no pátio: " + event.error.details);
+				}
+			}
+			
+			public function funcaoEstilo(data:Object, col:AdvancedDataGridColumn):Object
+            {
+            	if (data["cor"] == "Branco")
+            	{
+            		return {color:Number(Cor.getCodigo("Preto"))};
+            	}
+            	
+            	else if (data["cor"] == "Prata")
+            	{
+            		return {color:0x9ca1a5, fontWeight:"bold"};
+            	}
+            	
+            	else if (data["cor"] == "Cinza")
+            	{
+            		return {color:0x808284, fontWeight:"bold"}
+            	}
+            	
+            	else if (data["cor"] == "Outra")
+            	{
+            		return {color:Number(Cor.getCodigo("Preto"))};
+            	}
+            	
+            	else
+            	{
+	            	return {color:Number(Cor.getCodigo(data["cor"])), fontWeight:"bold"};
+	            }
+            }
+            
+            public function funcaoTimerPatio(event:TimerEvent):void
+            {
+            	var dP:ArrayCollection = (Array)(this.dataProvider).pop();
+            	var novoDP:Array = new Array();
+            	var agora:Date = new Date();
+            	
+            	for (var i:Number = 0; i < dP.length; i++)
+            	{
+            		var tMovimentacao:Date = Utils.getDate((Object)(dP[i]).t.toString());
+            		var dataIntervalo:Date = new Date();
+            		dataIntervalo.time = agora.time - tMovimentacao.time;
+            		
+            		var intervalo:Number = dataIntervalo.time/1000;				            	
+	      			var segundos:Number = Math.ceil(intervalo%60);      			
+	      			var minInterm:Number = Math.floor(intervalo/60);
+	      			var minutos:Number = Math.ceil(minInterm%60);
+	      			var horas:Number = Math.floor(minInterm/60);
+	      			            		
+            		(Object)(dP[i]).tempoNoPatio =  (horas < 10 ? "0" : "")            										
+            										+ horas.toString() 
+			      									+ ":" 
+			      									+ (minutos < 10 ? "0" : "")
+			      									+ minutos.toString()
+			      									+ ":"
+			      									+ (segundos < 10 ? "0" : "")
+			      									+ segundos.toString();
+            		novoDP.push(dP[i]);
+ 	            	
+            	}
+            	
+            	this.dataProvider = novoDP;
+            }
+            
+            public function toggleTimer():void
+            {
+            	if (timerPatio.running)
+            	
+            		timerPatio.stop();
+            		
+            	else
+            	
+            		timerPatio.start();
+            }
+            
+            public function desativarTimer():void
+            {
+            	timerPatio.stop();
+            }
+			
+		]]>
+		
+	</mx:Script>
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Placa" dataField="placa"/>
+			<mx:AdvancedDataGridColumn headerText="Marca" dataField="marca"/>
+			<mx:AdvancedDataGridColumn headerText="Modelo" dataField="modelo"/>
+			<mx:AdvancedDataGridColumn headerText="Cor" dataField="cor"/>
+			<mx:AdvancedDataGridColumn headerText="Créd. (R$)" dataField="credito"/>
+			<mx:AdvancedDataGridColumn width="130" headerText="Entrada em" sortable="false" dataField="dataEntrada"/>
+			<mx:AdvancedDataGridColumn headerText="Cód." dataField="codigo"/>
+			<mx:AdvancedDataGridColumn headerText="Tempo" sortable="false" dataField="tempoNoPatio"/>
+			<mx:AdvancedDataGridColumn headerText="Cobr." dataField="cobranca"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>

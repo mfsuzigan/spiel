@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas visible="true" show="initTransito();Application.application.wipeUp" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*" fontWeight="bold">
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.AbstractConsumer;
+			import com.spiel.Movimentacao;
+			import com.spiel.Anotacao;			
+			import com.spiel.Modelo;
+			import com.spiel.Marca;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			
+			[Embed(source="../resources/icones/printer.png")]
+	        [Bindable]
+	        public var imgPrinter:Class;
+	        
+	        [Embed(source="../resources/icones/error64.png")]
+	        [Bindable]
+	        public var imgProibido:Class;
+		]]>
+	</mx:Script>
+	<mx:Script source="funcoesTelaTransito.as"/>
+	<mx:Script source="funcoesInserirVeiculo.as"/>
+	<mx:Script source="funcoesAnotacoes.as"/>
+	<mx:Script source="funcoesHistorico.as"/>
+	<mx:Script source="funcoesComprovantes.as"/>
+		
+	<mx:Canvas width="581.6666" height="377.25" id="canvasPlaca" horizontalCenter="0" verticalCenter="-5">		
+	    <mx:Button click="entradaNoPatio(inputVeiculo.text)" id="botaoEntrada" label="Entrada no pátio" horizontalCenter="-125" fontSize="20" width="242" enabled="false" top="210.8">
+	    	<mx:icon>@Embed(source='../resources/icones/arrow_up.png')</mx:icon>
+	    </mx:Button>
+	    <mx:TextInput enter="tratarEnterInputVeiculo()" id="inputVeiculo" fontSize="50" maxChars="8" width="354" textAlign="center" change="formatarTextoPlaca();resolverInput(inputVeiculo);" fontWeight="bold" top="115" themeColor="#FFFFFF" horizontalCenter="0" tabIndex="1"/>
+	    <mx:Button click="saidaDoPatio(inputVeiculo.text)" id="botaoSaida" label="Saída do pátio" horizontalCenter="125" fontSize="20" width="242" enabled="false" labelPlacement="left" top="210.8">
+	    	<mx:icon>@Embed(source='../resources/icones/arrow_down.png')</mx:icon>
+	    </mx:Button>
+	    <mx:Label visible="true" horizontalCenter="0" fontSize="14" id="textoStatusVeiculo" text="Insira uma placa ou código de entrada de um veículo" fontWeight="bold" fontStyle="normal" fontFamily="Arial" top="66" height="41" width="95%" textAlign="center"/>
+	    <mx:Label click="botaoDesfazer.visible = !botaoDesfazer.visible" id="labelTransitoTitulo" text="Trânsito de veículos" fontSize="24" fontWeight="bold" top="10" horizontalCenter="-134"/>
+	    <mx:HRule width="516" height="2" top="41" horizontalCenter="-12"/>
+	    <mx:Button id="botaoDesfazer" visible="false" x="476" click="Application.application.mostrarPainelSenha('desfazer');" toolTip="Desfazer ações" top="138" width="29">
+	        <mx:icon>@Embed(source='../resources/icones/arrow_undo.png')</mx:icon>
+	    </mx:Button>
+	    <mx:List id="sugestoesInput" visible="false" horizontalCenter="-124" top="187" width="106" height="46.8" fontWeight="normal"/>
+	    <mx:Canvas y="290.25" width="515" height="71" horizontalCenter="0" id="canvasMensagem" visible="false" borderStyle="solid" borderColor="#F2C03B" borderThickness="1" fontWeight="normal">
+	        <mx:Image source="@Embed('../resources/icones/information.png')" left="10" top="3"/>
+	        <mx:Canvas width="80%" height="37" horizontalCenter="0" top="21">
+	            <mx:Label fontWeight="bold" id="labelDesignacaoVeiculo" top="0" horizontalCenter="0" textAlign="center"/>
+	            <mx:Label fontWeight="bold" id="labelDesignacaoMovimentacao" horizontalCenter="0" textAlign="center" top="14"/>
+	        </mx:Canvas>
+	        <mx:Button click="disparaEfeitoAccordionHistorico()" mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Histórico')" icon="@Embed(source='../resources/icones/find.png')" right="10" bottom="10"/>
+	        <mx:Label id="labelInstanteMensagem" left="34" top="3"/>
+	        <mx:Label id="labelDataMensagem" right="10" top="3"/>
+	    </mx:Canvas>
+	    <mx:Canvas y="282.25" width="515" height="71" horizontalCenter="0" id="canvasMensagemGenerica" visible="false" borderStyle="solid" borderColor="#F2C03B" borderThickness="1" fontWeight="normal">
+	        <mx:Image source="@Embed('../resources/icones/information.png')" left="10" top="3"/>
+            <mx:Label id="labelMensagemGenerica" horizontalCenter="0" textAlign="center" verticalCenter="0"/>
+	        <mx:Label id="labelInstanteMensagemGenerica" left="34" top="3"/>
+	        <mx:Label id="labelDataMensagemGenerica" right="10" top="3"/>
+	    </mx:Canvas>
+	    <mx:Canvas visible="false" y="275.75" width="233" height="29.25" borderColor="#FF0000" borderStyle="solid" backgroundColor="#FF0000" cornerRadius="4" horizontalCenter="0" id="canvasEfetuarCobranca">
+	        <mx:Label text="Efetuar cobrança de R$x" horizontalCenter="0" verticalCenter="0" color="#FFFFFF" fontWeight="bold" id="labelEfetuarCobranca"/>
+	    </mx:Canvas>
+	     <mx:Canvas visible="false" y="275.75" width="233" height="29.25" borderColor="#03A330" borderStyle="solid" backgroundColor="#03A330" cornerRadius="4" horizontalCenter="0" id="canvasCreditoDeduzido">
+	        <mx:Label text="Créditos do veículo deduzidos em R$x" horizontalCenter="0" verticalCenter="0" color="#FFFFFF" fontWeight="bold" id="labelCreditoDeduzido"/>
+	    </mx:Canvas>
+	     <mx:Canvas visible="false" y="254.75" width="375" height="20.45" borderColor="#FFF600" borderStyle="solid" backgroundColor="#FFF600" cornerRadius="4" id="canvasCreditoInsuficiente" horizontalCenter="0">
+	         <mx:Label id="labelCreditoInsuficiente" horizontalCenter="0" verticalCenter="0" color="#000000" fontWeight="bold"/>
+	     </mx:Canvas>
+	     <mx:Grid top="45" id="gridMovimentacaoBloqueada" visible="false" horizontalCenter="0">
+	         <mx:GridRow width="100%" height="100%">
+	             <mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+	                 <mx:VBox verticalGap="0" horizontalAlign="center" verticalAlign="middle">
+	                     <mx:Label text="Movimentação bloqueada" color="#A80725" fontSize="17"/>
+	                     <mx:Text text="Este veículo já esteve no pátio hoje e no momento uma nova entrada não deve ser registrada" color="#A80725" fontSize="12" fontWeight="normal" fontFamily="Arial" width="297" height="42" textAlign="center"/>
+	                 </mx:VBox>
+	             </mx:GridItem>
+	             <mx:GridItem width="100%" height="100%">
+	                 <mx:Image source="{imgProibido}" width="64" height="64"/>
+	             </mx:GridItem>
+	         </mx:GridRow>
+	     </mx:Grid>
+	</mx:Canvas>
+	
+	<mx:Accordion id="accordionVeiculoRegistrado" showEffect="wipeIn" hideEffect="wipeOut" width="250" height="100%" right="0" visible="false" y="0">
+		<mx:Canvas id="canvasDadosVeiculo" visible="false" label="Dados do veículo" width="100%" height="100%" backgroundColor="#D1F9C3" fontWeight="normal">
+			<mx:Label fontSize="36" horizontalCenter="0" fontWeight="bold" id="labelMarca" top="15"/>
+			<mx:Label fontSize="36" horizontalCenter="0" fontWeight="bold" id="labelModelo" top="83"/>
+			<mx:Label text="Marca:" fontWeight="normal" horizontalCenter="0" top="10"/>
+			<mx:Label text="Modelo:" fontWeight="normal" horizontalCenter="0" top="73"/>
+			<mx:Label text="Status:" fontWeight="normal" horizontalCenter="0" top="470"/>
+			<mx:Label id="labelStatus" y="613" horizontalCenter="0" fontSize="28" fontWeight="bold"/>
+			<mx:Image visible="false" id="imagemStatusNoPatio" horizontalCenter="0" top="486" source="@Embed(source='../resources/icones/green_shield.png')"/>
+			<mx:Image visible="false" id="imagemStatusForaDoPatio" horizontalCenter="0" top="486" source="@Embed(source='../resources/icones/rain.png')"/>
+				<mx:VBox horizontalAlign="center" horizontalCenter="0" top="227">
+					<mx:Label y="178" text="Cor:" fontWeight="normal" horizontalCenter="0"/>
+					<mx:Canvas x="109" y="204" width="30" height="30" borderStyle="solid" borderThickness="1" backgroundColor="#DCD4D4" id="canvasCor">
+						<mx:Label text="!" fontWeight="bold" textAlign="center" fontSize="16" horizontalCenter="0" verticalCenter="0" id="labelOutraCor" visible="false"/>
+					</mx:Canvas>
+					<mx:Label y="242" horizontalCenter="0" fontWeight="bold" fontSize="20" id="labelCor"/>
+				</mx:VBox>
+				<mx:HRule x="0" y="382" width="100%"/>
+				<mx:Label text="Código de entrada:" horizontalCenter="0" id="labelCodigoDeEntrada" top="400"/>
+				<mx:Label fontWeight="bold" fontSize="28" horizontalCenter="0" textAlign="center" id="labelValorCodigoDeEntrada" top="417"/>
+				<mx:Canvas width="204" height="50" backgroundColor="#DBDBDB" cornerRadius="10" horizontalCenter="0" borderStyle="solid" top="162">
+						<mx:Label fontWeight="bold" fontSize="28" horizontalCenter="0" verticalCenter="0" id="labelPlaca"/>
+				</mx:Canvas>
+				<mx:Label text="Placa:" horizontalCenter="0" top="141"/>
+				<mx:Button toolTip="Editar créditos" x="213" y="352" width="25" click="mostrarJanelaEditarCreditos()">
+						<mx:icon>@Embed(source='../resources/icones/money.png')</mx:icon>
+				</mx:Button>
+				<mx:CheckBox visible="true" label="Cobrança na entrada" fontWeight="bold" fontSize="12" selected="true" id="checkboxCobrancaNaEntradaVeiculoRegistrado" y="327" horizontalCenter="-5"/>
+				<mx:CheckBox click="confirmarMudancaIsento(labelPlaca.text)" label="Veículo isento" fontWeight="bold" fontSize="12" id="checkboxVeiculoIsentoRegistrado" y="352" horizontalCenter="-5"/>
+		</mx:Canvas>
+		<mx:Canvas fontWeight="normal" id="canvasMovimentacoes" width="100%" height="100%" backgroundColor="#D1F9C3" label="Histórico">
+		</mx:Canvas>
+	</mx:Accordion>
+	
+	<mx:RegExpValidator valid="formatarTextoInputCredito(event)" required="false" id="validadorInputCredito" trigger="{inputCredito}" triggerEvent="focusOut" noMatchError="Valor inválido" expression="^([0-9]+,[0-9]|[0-9]+)+$" source="{inputCredito}" property="text"/>
+	<mx:Accordion show="inputModelo.setFocus()" id="accordionRegistrarVeiculo" showEffect="wipeIn" hideEffect="wipeOut" y="0" width="250" height="100%" right="0" visible="false">
+		<mx:Canvas visible="false" label="Registrar veículo" width="100%" height="100%" backgroundColor="#f69281" fontWeight="normal">
+			<mx:Label text="Marca:" horizontalCenter="0" top="103" id="textoMarcaStatus" fontWeight="bold" fontSize="10"/>
+			<mx:Label text="Modelo:" horizontalCenter="0" top="24" id="textoModeloStatus" fontWeight="bold" fontSize="10"/>
+			<mx:Label text="Cor:" horizontalCenter="0" top="179" id="textoCorStatus" fontWeight="bold" fontSize="10"/>
+			<mx:Canvas id="quadroCores" width="50" height="50" backgroundColor="#B7BABC" horizontalCenter="0" top="205" borderStyle="outset">
+				<mx:Label visible="false" id="labelInterrogacao" text="?" horizontalCenter="0" verticalCenter="0" textAlign="center" fontSize="27" fontWeight="bold"/>
+			</mx:Canvas>
+			<mx:Button click="validarInsercaoVeiculo()" label="Registrar veículo" fontSize="20" fontWeight="bold" horizontalCenter="0" top="546" id="botaoRegistrarVeiculo" tabIndex="10">
+				<mx:icon>@Embed(source='../resources/icones/tick.png')</mx:icon>
+			</mx:Button>
+			<mx:Button width="30" height="30" label="Selecionar cor..." top="224" id="botaoEscolherCor" click="abrirPainelCores()" horizontalCenter="48">
+				<mx:icon>@Embed(source='../resources/icones/palette.png')</mx:icon>
+			</mx:Button>
+			<mx:TextInput fontSize="20" top="50" id="inputModelo" change="processarModelo()" textAlign="center" focusOut="forcarSugestao(inputModelo, sugestoesModelos, event)" enter="tratarEnterInputModelo(event)" horizontalCenter="0" tabIndex="5" fontWeight="normal"/>
+			<mx:TextInput fontSize="18" top="129" id="inputMarca" textAlign="center" enabled="false" horizontalCenter="0" fontWeight="normal"/>
+			<mx:TextInput fontSize="18" top="262" id="inputCor" text="Prata" textAlign="center" change="processarCor()" enter="tratarEnterInputCor(event)" focusOut="forcarSugestao(inputCor, sugestoesCores, event)" focusIn="inputCor.setSelection(0, inputCor.text.length)" horizontalCenter="0" tabIndex="6" fontWeight="normal"/>
+			<mx:List id="sugestoesModelos" visible="false" width="160" height="46.8" horizontalCenter="0" top="85" fontWeight="normal"/>
+			<mx:Panel width="211" height="141" layout="absolute" title="$" top="344" horizontalCenter="0" fontStyle="normal" textAlign="center">
+				<mx:CheckBox id="checkboxCobrancaNaEntrada" y="10" label="Cobrança na entrada" fontSize="10" fontWeight="normal" selected="true" textAlign="center" horizontalCenter="-16" tabIndex="7"/>
+				<mx:CheckBox change="toggleVeiculoIsento(event)" id="checkboxVeiculoIsento" y="40" label="Veículo isento" fontWeight="normal" fontSize="10" x="10" tabIndex="8"/>
+				<mx:Label y="73" text="Inserir crédito:   R$" fontWeight="normal" fontSize="10" x="10"/>
+				<mx:TextInput id="inputCredito" width="57" text="0,00" x="124" y="69" textAlign="left" tabIndex="9" fontWeight="normal" enter="tratarEnterInputCredito()"/>
+			</mx:Panel>
+			<mx:List id="sugestoesCores" visible="false" width="160" height="46.8" horizontalCenter="0" top="294" fontWeight="normal"></mx:List>
+		</mx:Canvas>
+	</mx:Accordion>
+    
+   <mx:Accordion show="povoarTabelaAnotacoes();resetCamposAnotacoes()" id="accordionAnotacoes" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion" fontWeight="normal">
+        <mx:Canvas label="Anotações" width="100%" height="100%" fontWeight="normal">
+            <mx:TextInput focusOut="prepararCamposAnotacoesSaida(event)" focusIn="prepararCamposAnotacoesEntrada(event)" left="522" top="10" fontStyle="italic" text="Insira aqui o título" id="inputTituloAnotacao" fontSize="12" right="10"/>
+            <mx:TextArea focusOut="prepararCamposAnotacoesSaida(event)" focusIn="prepararCamposAnotacoesEntrada(event)" left="522" right="10" top="40" bottom="160"  text="Insira aqui o texto da anotação" fontStyle="italic" id="inputTextoAnotacao" fontSize="12"/>
+            <mx:Button click="salvarAnotacao()" id="botaoSalvarAnotacao" bottom="100" label="Salvar anotação" left="522" right="10" icon="@Embed(source='../resources/icones/page_save.png')"/>
+            <mx:Button enabled="false" click="confirmarExclusaoAnotacao(false)" id="botaoExcluirAnotacao" bottom="70" label="Excluir anotação" left="522" right="10" icon="@Embed(source='../resources/icones/page_delete.png')"/>
+            <mx:Button click="mostrarJanelaEditarGatilhos()" id="botaoEditarGatilho" label="Editar gatilho..." icon="@Embed(source='../resources/icones/time.png')" left="522" right="10" bottom="40"/>
+            <mx:Button click="confirmarExclusaoAnotacao(true)" id="botaoExcluirTodasAsAnotacoes" bottom="10" label="Excluir todas as anotações" left="522" right="10" icon="@Embed(source='../resources/icones/page_lightning.png')"/>
+            <mx:AdvancedDataGrid sortableColumns="false" itemClick="mostrarAnotacao(event)" id="tabelaAnotacoes" width="502" bottom="10" top="10" left="10" fontWeight="normal">
+                <mx:columns>
+                    <mx:AdvancedDataGridColumn headerText="Título" textAlign="center" dataField="titulo" headerStyleName="titulosDeTabelas"/>
+                    <mx:AdvancedDataGridColumn headerText="Dia" textAlign="center" dataField="dia" width="80" headerStyleName="titulosDeTabelas"/>
+                    <mx:AdvancedDataGridColumn headerText="Hora" textAlign="center" dataField="hora" width="70" headerStyleName="titulosDeTabelas"/>
+                    <mx:AdvancedDataGridColumn headerText="Veículo" textAlign="center" dataField="placa" width="70" headerStyleName="titulosDeTabelas"/>
+                    <mx:AdvancedDataGridColumn headerText="Entrada" textAlign="center" dataField="codigoDeEntrada" width="75" headerStyleName="titulosDeTabelas"/>                    
+                    <mx:AdvancedDataGridColumn headerText="Prévia" dataField="previa" wordWrap="true" headerStyleName="titulosDeTabelas"/>
+                </mx:columns>
+            </mx:AdvancedDataGrid>
+            <mx:Button click="resetCamposAnotacoes()" id="botaoNovaAnotacao" bottom="130" label="Nova anotação" left="520" right="12" icon="@Embed(source='../resources/icones/page.png')"/>
+        </mx:Canvas>
+    </mx:Accordion>
+    
+    <mx:Accordion id="accordionAjuda" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion">
+        <mx:Canvas label="Ajuda" width="100%" height="100%">
+            <mx:Label text="Para sanar alguma dúvida ou problema, consulte o manual ou envie um e-mail para" fontWeight="normal" left="30" verticalCenter="-37" fontSize="12"/>
+            <mx:Label text="mfsuzigan@gmail.com ." left="562" fontSize="12" top="102"/>
+        </mx:Canvas>
+    </mx:Accordion>
+    
+    <mx:Accordion id="accordionHistorico" creationComplete="resetCamposHistorico()" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion" fontWeight="normal">
+        <mx:Canvas label="Histórico" width="100%" height="100%">
+        	<mx:Panel width="319" layout="absolute" title="Filtrar histórico" height="279" verticalCenter="0" left="10" borderColor="#FFDC73" alpha="1.0" borderAlpha="100">
+        		<mx:Text x="10" y="73" text="... de..."/>
+        		<mx:Text x="10" y="127" text="... até:"/>
+        		<mx:DateField showToday="false" keyUp="tratarChangeEventData(event)" change="tratarChangeEventData(event)" dayNames="{Application.application.nomesDeDias}" monthNames="{Application.application.nomesDeMeses}" y="99" id="inputInicioHistorico" formatString="DD/MM/YYYY" horizontalCenter="-70"/>
+        		<mx:DateField showToday="false" keyUp="tratarChangeEventData(event)" change="tratarChangeEventData(event)" dayNames="{Application.application.nomesDeDias}" monthNames="{Application.application.nomesDeMeses}" y="153" id="inputTerminoHistorico" formatString="DD/MM/YYYY" horizontalCenter="-70"/>
+        		<mx:NumericStepper keyUp="tratarChangeEventData(event)" change="tratarChangeEventData(event)" value="0" y="99" width="40" minimum="0" maximum="23" id="inputHInicioHistorico"  horizontalCenter="3"/>
+        		<mx:NumericStepper change="tratarChangeEventData(event)" value="0" y="99" width="40" minimum="0" maximum="59" id="inputMInicioHistorico" horizontalCenter="61"/>
+        		<mx:Label y="101" text="h" textAlign="center" horizontalCenter="32"/>
+        		<mx:Label y="101" text="min" textAlign="center" horizontalCenter="98"/>
+        		<mx:NumericStepper value="23" change="tratarChangeEventData(event)" y="153" width="40" minimum="0" maximum="23" id="inputHTerminoHistorico"  horizontalCenter="3"/>
+        		<mx:NumericStepper value="59" change="tratarChangeEventData(event)" y="153" width="40" minimum="0" maximum="59" id="inputMTerminoHistorico" horizontalCenter="61"/>
+        		<mx:Label y="155" text="h" textAlign="center" horizontalCenter="32"/>
+        		<mx:Label y="155" text="min" textAlign="center" horizontalCenter="98"/>
+        		<mx:Button x="10" y="200" label="Limpar filtro" width="279" click="resetCamposHistorico()"/>
+        		<mx:Label x="10" y="10" text="Mostrar histórico para o veículo de placa..."/>
+        		<mx:TextInput horizontalCenter="0" change="tratarChangeEventPlaca(event)" y="36" width="77"  maxChars="8" id="inputPlacaHistorico"/>
+        		<mx:List id="sugestoesPlacaHistorico" horizontalCenter="0" y="60" width="90" height="48" visible="false"></mx:List>
+        	</mx:Panel>
+        	<ns1:TabelaMovimentacoes fontSize="12" itemEditEnd="resetCamposHistorico()" id="tabelaHistorico" creationComplete="tabelaHistorico.povoar(null, null, null)" top="36" bottom="10" left="337" right="10"/>
+        	<mx:Label y="10" id="labelNroMovimentacoesEncontradas" left="337"/>
+        </mx:Canvas>
+    </mx:Accordion>
+    
+    <mx:Accordion id="accordionSobreOSpiel" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion">
+        <mx:Canvas label="Sobre o Spiel" width="100%" height="100%">
+            <mx:Canvas verticalCenter="-35" left="22">
+                <mx:Label text="spiel versão 1.0" fontWeight="bold" fontSize="12" y="10" left="34"/>
+                <mx:Label text="Fevereiro/2011" fontWeight="normal" fontSize="12" y="66" left="34"/>
+                <mx:Label text="Autor: M. F. Suzigan" fontWeight="normal" fontSize="12" y="38" left="34"/>
+                <mx:Image source="@Embed('../resources/icones/bricks.png')" left="10" top="10"/>
+            </mx:Canvas>
+        </mx:Canvas>
+    </mx:Accordion>
+    
+	<mx:Accordion creationComplete="povoarTabelaComprovantesImpressos(null)" id="accordionReimprimir" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion" fontWeight="normal">
+	    <mx:Canvas label="Reimprimir comprovantes" width="100%" height="100%">
+        	<mx:TextInput change="tratarChangeEventPlacaComprovante(event)" y="12" width="77"  maxChars="8" id="inputPlacaComprovante" left="115"/>
+	    	<mx:DataGrid itemClick="botaoReimprimirComprovante.enabled = true;" id="tabelaComprovantesImpressos" fontSize="12" bottom="42" textAlign="center" top="59" right="10" left="10">
+	            <mx:columns>
+	                <mx:DataGridColumn headerText="Cód." dataField="nroMovimentacao" width="45"/>
+	                <mx:DataGridColumn headerText="Placa" dataField="placa" width="80"/>
+	                <mx:DataGridColumn headerText="Marca" dataField="marcaVeiculo" width="100"/>
+	                <mx:DataGridColumn headerText="Modelo" dataField="modeloVeiculo" width="100"/>
+	                <mx:DataGridColumn headerText="Entrada em:" dataField="timestamp" width="180"/>
+	                <mx:DataGridColumn headerText="Corretivo?" dataField="corretivo" width="80"/>
+	            </mx:columns>
+	        </mx:DataGrid>
+	        <mx:List id="sugestoesPlacaComprovante" width="90" height="48" visible="false" left="115" top="37"></mx:List>	        
+	        <mx:Button click="reimprimirComprovante(tabelaComprovantesImpressos.selectedItem)" id="botaoReimprimirComprovante" label="Reimprimir comprovante" fontSize="12" enabled="false" y="10" horizontalCenter="0"/>
+	        <mx:Label x="10" y="15" text="Filtrar por placa:"/>
+	    </mx:Canvas>
+	</mx:Accordion>    
+	<mx:WipeLeft id="wipeIn" duration="200"/>
+    <mx:WipeRight id="wipeOut" duration="100"/>
+    <mx:WipeUp id="wipeUp" duration="1000"/>
+    <mx:WipeDown id="wipeDown" duration="1000"/>
+    
+    <mx:Style>
+    	.headerAccordion
+    	{
+    		fillColors: #FFDC73, #FFDC73;
+    		fillAlphas: 100, 100;
+    	}
+    	
+    	.Alert
+    	{
+			color : #0f3177;
+			title-style-name : “alertTitle”;
+			header-height:19;
+			border-thickness: 1;
+			drop-shadow-enabled: true;
+			drop-shadow-color :#d1ddf7;
+			background-color: #ffffff;
+			corner-radius :6;
+			border-style :solid;
+			header-colors : #90a4d1, #5970a0;
+			footer-colors : #9db6d9, #ffffff;
+			border-color : #5970a0;
+		}
+			
+		.alertTitle
+		{
+			font-family :Verdana;
+			font-size :10;
+			font-weight :bold;
+			text-align :left;
+			color :#ffffff;
+		}
+		
+		.titulosDeTabelas
+		{
+			text-align: left;
+		}
+    	
+    </mx:Style>
+    <mx:Grid bottom="10" left="10" right="10" id="boxFerramentas">
+    	<mx:GridRow width="100%" height="26">
+            <mx:GridItem width="100%" height="100%" horizontalAlign="left" verticalAlign="top">
+    			<mx:Label visible="false" text="Modo Somente Entradas ativado" id="labelModoSomenteEntradas" left="10" bottom="50" fontWeight="normal"/>
+            </mx:GridItem>
+        </mx:GridRow>
+        <mx:GridRow width="100%" height="100%">
+            <mx:GridItem width="100%" height="100%" horizontalAlign="left" verticalAlign="middle">
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Histórico')" icon="@Embed(source='../resources/icones/find.png')" click="disparaEfeitoAccordionHistorico();resetCamposHistorico()"/>    
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Reimprimir último comprovante')" icon="@Embed(source='../resources/icones/printer_small.png')" click="reimprimirUltimoComprovante()"/>    
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Reimprimir comprovantes')" icon="@Embed(source='../resources/icones/printer_add.png')" click="disparaEfeitoAccordionReimprimir()"/>
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Esvaziar pátio')" icon="@Embed(source='../resources/icones/lightning.png')" click="confirmarEsvaziarPatio()"/>
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores(labelStatusModoSomenteEntradas())" icon="@Embed(source='../resources/icones/application_get.png')" click="toggleModoSomenteEntradas()"/>
+            	<mx:Button id="botaoAnotacoes" mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Anotações')" icon="@Embed(source='../resources/icones/page_edit.png')" click="disparaEfeitoAccordionAnotacoes()"/>
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Ajuda')" icon="@Embed(source='../resources/icones/help.png')" click="disparaEfeitoAccordionAjuda()"/>
+            	<mx:Button mouseOut="mudaTextoBotoesInferiores('')" mouseOver="mudaTextoBotoesInferiores('Sobre o Spiel')" icon="@Embed(source='../resources/icones/bricks.png')" click="disparaEfeitoAccordionSobreOSpiel()"/>               
+            	<mx:VRule width="2" height="16"/>                
+            	<mx:Label fontWeight="normal" id="textoBotoesInferiores"/>
+            </mx:GridItem>
+            <mx:GridItem width="100%" height="100%" horizontalAlign="right" verticalAlign="middle">            
+      			<mx:Button toolTip="Fechar aba" icon="@Embed(source='../resources/icones/cancel.png')" click="fechaAccordion()" width="28" id="botaoFecharBoxFerramentas" visible="false"/>
+            </mx:GridItem>
+        </mx:GridRow>
+    </mx:Grid>
+    <mx:Canvas left="10" right="10" height="181" verticalCenter="-292">
+        <mx:Image source="{imgPrinter}" id="imagemImpressora" visible="false" width="128" height="128" left="0" top="15"/>
+    </mx:Canvas>
+</mx:Canvas>

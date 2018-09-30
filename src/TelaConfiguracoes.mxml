@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas show="initConfiguracoes()" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*" borderThickness="90">
+	<mx:Script>
+		<![CDATA[
+			import com.spiel.Utils;
+			import com.spiel.Marca;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			
+			include "funcoesTelaConfiguracoes.as"
+		]]>
+	</mx:Script>
+	<mx:Label  text="Configurações e ferramentas" fontSize="24" fontWeight="bold" top="18" left="10" width="405"/>
+	<mx:HRule height="2" top="51" left="10" right="10"/>
+	<mx:Accordion change="initConfiguracoes()" left="10" right="10" top="61" bottom="10" id="accordionConfiguracoes">
+		<mx:Canvas label="Modelos de veículos" width="100%" id="botao">
+			<mx:RadioButtonGroup id="radioGroupModelo"/>
+			<mx:Grid top="30" bottom="10" width="756" horizontalCenter="0">
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:RadioButton groupName="radioGroupModelo" click="toggleRadiosModelos(event)" id="radioNovoModelo" selected="true"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+									<mx:Label text="Novo modelo" fontWeight="bold" fontSize="18" textAlign="left" width="163"/>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid width="444">
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:Label text="Nome:" fontWeight="bold" fontSize="10"/>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:TextInput textAlign="center" fontSize="18" id="inputNovoModelo" click="radioNovoModelo.dispatchEvent(new MouseEvent(MouseEvent.CLICK))" width="420"/>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:Label text="Marca:" fontWeight="bold" fontSize="10" textAlign="left"/>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:ComboBox id="comboboxNovoModeloMarcas" fontSize="18" textAlign="center" width="300"></mx:ComboBox>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+				</mx:GridRow>				
+				<mx:GridRow width="100%" height="37">
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:RadioButton groupName="radioGroupModelo" click="toggleRadiosModelos(event)" id="radioEditarModelo"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+									<mx:Label text="Editar modelo" fontWeight="bold" fontSize="18" textAlign="left" width="155" height="24"/>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem colSpan="2" width="100%" height="100%" horizontalAlign="center">
+						<mx:Grid>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:Label text="Modelo:" fontWeight="bold" fontSize="10"/>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%">
+									<mx:ComboBox id="comboboxEditarModelo" click="radioEditarModelo.dispatchEvent(new MouseEvent(MouseEvent.CLICK))" fontSize="18" textAlign="center" width="420" enabled="false" change="tratarSelecaoModelo()"></mx:ComboBox>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="20" />
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid width="444">
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:Label text="Nome:" fontWeight="bold" fontSize="10"/>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:TextInput textAlign="center" fontSize="18" id="inputEditarModelo" width="420" enabled="false"/>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:Label text="Marca:" fontWeight="bold" fontSize="10" textAlign="left"/>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+									<mx:ComboBox id="comboboxEditarModeloMarcas" fontSize="18" textAlign="center" width="300" enabled="false"></mx:ComboBox>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="50" />
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center" colSpan="2">
+						<mx:Button click="salvarModelo()" label="Salvar" height="39" fontSize="14" width="300" id="botaoSalvarModelo"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+		</mx:Canvas>
+		<mx:Canvas label="Marcas de veículos" width="100%" height="100%">
+			<mx:Canvas horizontalCenter="0" verticalCenter="-99">
+				<mx:Label y="26" text="Inserir nova marca, de nome:" fontWeight="bold" fontSize="22" textAlign="left" horizontalCenter="0"/>
+				<mx:TextInput textAlign="center" fontSize="18" y="72" horizontalCenter="0" id="inputMarca"/>
+			</mx:Canvas>
+			<mx:Button click="salvarMarca()" label="Salvar" height="39" fontSize="14" width="211" id="botaoSalvarMarca" horizontalCenter="0" verticalCenter="-10"/>
+		</mx:Canvas>
+		<mx:Canvas label="Backup do banco de dados" width="100%" height="100%">
+			<mx:VBox horizontalCenter="0" horizontalAlign="center" verticalCenter="-50" verticalGap="20">
+				<mx:Text text="Clique no botão abaixo para salvar uma cópia de segurança (backup) do banco de dados." fontWeight="bold" fontSize="18" textAlign="center" width="538.3333"/>
+				<mx:Button click="gerarBackupDoBD()" label="Salvar cópia do banco de dados..." height="39" fontSize="14" width="289" id="botaoSalvarMarca0"/>
+			</mx:VBox>
+		</mx:Canvas>
+		<mx:Canvas label="Agregar informações ao banco de dados" width="100%" height="100%">
+			<mx:VBox horizontalCenter="0" verticalCenter="-50" horizontalAlign="center" verticalGap="20">
+				<mx:Text text="Clique no botão abaixo para agregar veículos e movimentações ao sistema a partir de um arquivo de backup." fontWeight="bold" fontSize="18" textAlign="center" width="650" height="61"/>
+				<mx:Button click="Application.application.mostrarPainelSenha('agregarInformacoes');" label="Agregar ao banco de dados..." height="39" fontSize="14" width="289" id="botaoAgregarDados"/>
+			</mx:VBox>
+		</mx:Canvas>
+		<mx:Canvas label="Limpar histórico" width="100%" height="100%">
+			<mx:VBox horizontalCenter="0" verticalCenter="-50" horizontalAlign="center" verticalGap="20">
+				<mx:Text text="Clique no botão abaixo para limpar o histórico de movimentações." fontWeight="bold" fontSize="18" textAlign="center" width="560" height="53"/>
+				<mx:Button click="Application.application.mostrarPainelSenha('limparHistorico');" label="Limpar histórico..." height="39" fontSize="14" width="289" id="botaoLimparHistorico"/>
+			</mx:VBox>
+		</mx:Canvas><!--
+		<mx:Canvas initialize="povoarTabelaMovimentacoesPorMes()" label="Limpar banco de dados" width="100%" height="100%">
+			<mx:DataGrid itemClick="botaoApagarMovimentacoes.enabled = true;" horizontalCenter="-10" height="216" width="326" textAlign="center" fontSize="14" top="190" id="tabelaMovimentacoesPorMes">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Mês" dataField="mes"/>
+					<mx:DataGridColumn headerText="Movimentações" dataField="nroMovimentacoes" width="140"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Text text="Selecione uma das opções na tabela abaixo e clique no botão &quot;Apagar movimentações&quot; para excluir todas as movimentações que ocorreram em tal mês." fontWeight="bold" fontSize="12" textAlign="center" horizontalCenter="-1" width="570.95" height="54.696968" top="54.15"/>
+			<mx:Text text="Todos os dados financeiros serão perdidos. &#xa;O cadastro de veículos não será afetado." fontWeight="bold" fontSize="18" textAlign="center" horizontalCenter="0" width="448" height="55" top="116.8" color="#FF0000"/>
+			<mx:Button click="apagarMovimentacoesPorMes(tabelaMovimentacoesPorMes.selectedItem)" enabled="false" label="Apagar movimentações" fontSize="14" top="424" icon="@Embed(source='../resources/icones/delete.png')" horizontalCenter="0" id="botaoApagarMovimentacoes"/>
+		</mx:Canvas>-->
+		<mx:Canvas initialize="atualizarTarifa()" show="atualizarTarifa()" label="Tarifa" width="100%" height="100%">
+			<mx:VBox horizontalAlign="center" horizontalCenter="0" verticalCenter="-98" verticalGap="16">
+				<mx:Label text="Nova tarifa:" fontWeight="bold" fontSize="22" textAlign="left"/>
+				<mx:HBox verticalAlign="middle" horizontalGap="0">
+					<mx:Label text="R$"/>
+					<mx:TextInput textAlign="center" fontSize="36" id="inputTarifa" text="5,00"/>
+				</mx:HBox>
+			</mx:VBox>
+			<mx:Button click="validarTarifa()" label="Salvar" height="39" fontSize="14" width="211" id="botaoSalvarTarifa" horizontalCenter="0" verticalCenter="-12"/>
+			<mx:Accordion id="accordionReimprimir" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion">
+			    <mx:Canvas label="Reimprimir comprovantes" width="100%" height="100%">
+			        <mx:DataGrid x="10" y="10" width="316" dataProvider="{Application.application.comprovantesImpressos}">
+			            <mx:columns>
+			                <mx:DataGridColumn headerText="Cód. de Ent." dataField="nroMovimentacao"/>
+			                <mx:DataGridColumn headerText="Placa" dataField="placa"/>
+			                <mx:DataGridColumn headerText="Marca" dataField="marcaVeiculo"/>
+			                <mx:DataGridColumn headerText="modelo" dataField="modeloVeiculo"/>
+			            </mx:columns>
+			        </mx:DataGrid>
+			        <mx:Button x="424" y="46" label="Button"/>
+			    </mx:Canvas>
+			</mx:Accordion>
+		</mx:Canvas>
+	</mx:Accordion>
+	
+	
+</mx:Canvas>

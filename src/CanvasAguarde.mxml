@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="442" height="102" backgroundColor="#FAEBAF">
+	<mx:Label text="Aguarde..." fontSize="36" fontWeight="bold" horizontalCenter="0" verticalCenter="-16"/>
+	<mx:Label text="Esta operação pode levar alguns instantes" fontWeight="bold" horizontalCenter="0" verticalCenter="32"/>
+	<mx:Image source="@Embed('../resources/icones/bricks.png')" left="10" top="10"/>
+</mx:Canvas>

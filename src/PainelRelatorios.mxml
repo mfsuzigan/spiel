@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="initPainelRelatorio()" xmlns:mx="http://www.adobe.com/2006/mxml" showCloseButton="true" visible="true" layout="absolute" borderColor="#FFDC73" borderAlpha="100" title="Gerar relatório">
+	<mx:Script source="funcoesRelatorios.as"/>
+	<mx:Label text="Escolha o período de abrangência do relatório:" fontSize="18" fontWeight="bold" horizontalCenter="0" top="10"/>
+	<mx:Grid top="56" horizontalCenter="0">
+		<mx:GridRow width="100%" height="25">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" borderStyle="solid">
+				<mx:Label text="Início:" fontWeight="bold" fontSize="16"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" borderStyle="solid">
+				<mx:Label text="Término:" fontWeight="bold" fontSize="16"/>
+			</mx:GridItem>
+		</mx:GridRow>		
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:DateChooser change="mudarLabelData(this.inicio)" id="inicio"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:DateChooser change="mudarLabelData(this.termino)" id="termino"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:Label text="08/02/2011" fontWeight="bold" fontSize="12" id="labelInicio"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:Label text="08/02/2011" fontWeight="bold" fontSize="12" id="labelTermino"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<mx:Button click="salvarRelatorio()" icon="@Embed(source='../resources/icones/page_paste.png')" label="Salvar relatório" fontSize="16" top="320" bottom="20" id="botaoSalvarRelatorio" width="356" horizontalCenter="0"/>
+	
+</mx:TitleWindow>

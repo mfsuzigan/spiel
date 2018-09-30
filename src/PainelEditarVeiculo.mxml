@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="initPainelEditarVeiculo()" showCloseButton="true" visible="true" borderColor="#FFDC73" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="596" borderAlpha="100" xmlns:ns1="*" alpha="0.95" height="698">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			include "funcoesPainelEditarVeiculo.as";
+	    	    
+		]]>
+	</mx:Script>
+		
+	<mx:Button click="validarInsercaoVeiculo()" label="Salvar dados" left="10" right="10" bottom="70" id="botaoSalvar" top="598">
+		<mx:icon>@Embed(source='../resources/icones/page_save.png')</mx:icon>
+	</mx:Button>
+	<mx:Grid width="303" top="0" bottom="247" left="10">
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom">
+				<mx:Label text="Placa:"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:TextInput change="formatarTextoPlaca()" textAlign="center" fontWeight="bold" fontSize="24" fontFamily="Verdana" maxChars="8" width="251" id="inputPlaca"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom">
+				<mx:Label text="Modelo:"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:TextInput fontWeight="bold" fontSize="20" textAlign="center" change="processarModelo()" focusOut="forcarSugestao(inputModelo, sugestoesModelos, event)" width="251" id="inputModelo"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom">
+				<mx:Label text="Marca:"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<mx:TextInput fontWeight="bold" fontSize="20" textAlign="center" enabled="false" width="251" id="inputMarca"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom">
+				<mx:Label text="Cor:"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
+				<mx:TextInput change="processarCor()" focusOut="forcarSugestao(inputCor, sugestoesCores, event)" fontWeight="bold" fontSize="18" textAlign="center" width="210" id="inputCor"/>
+				<mx:Button width="32" height="32" id="botaoEscolherCor" click="abrirPainelCores()">
+					<mx:icon>@Embed(source='../resources/icones/palette.png')</mx:icon>
+				</mx:Button>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="bottom">
+				<mx:Label text="Crédito:"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
+				<mx:Label text="R$" height="100%" paddingTop="7"/>
+				<mx:TextInput fontSize="16" width="110" fontWeight="bold" textAlign="center" id="inputCredito"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<mx:Grid width="556" height="129" x="10" top="451">
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center" fontWeight="bold" verticalAlign="bottom">
+				<mx:Label text="Histórico:"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+				<ns1:TabelaMovimentacoes width="100%" id="tabelaHistorico" height="98"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<mx:Canvas top="10" bottom="247" right="10" left="321">
+		<mx:Grid right="0" left="0" height="219" verticalCenter="-72">				
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="19" horizontalAlign="center" verticalAlign="bottom">
+					<mx:Label text="Status:"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem horizontalAlign="center" verticalAlign="middle" width="203" id="gridItemImagemStatus">
+					<mx:Image id="imagemStatus"/>
+				</mx:GridItem>
+			</mx:GridRow>				
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+					<mx:Label fontSize="30" fontWeight="bold" id="labelStatus"/>
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
+		<mx:Grid x="65.5" top="279">
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+					<mx:Label text="Código de entrada:"/>
+				</mx:GridItem>
+			</mx:GridRow>
+			<mx:GridRow width="100%" height="100%">
+				<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+					<mx:Label fontWeight="bold" fontSize="20" textAlign="center" id="labelIdMovimentacao"/>
+				</mx:GridItem>
+			</mx:GridRow>
+		</mx:Grid>
+		<mx:CheckBox label="Isento" fontSize="16" fontWeight="bold" id="checkboxIsento" horizontalCenter="0" top="369"/>
+	</mx:Canvas>
+	<mx:Button label="Cancelar" click="this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));" left="10" right="10" id="botaoCancelar" bottom="40" top="628">
+	</mx:Button>
+	<mx:RegExpValidator valid="formatarTextoInputCredito(event)" required="false" id="validadorInputCredito" trigger="{inputCredito}" triggerEvent="focusOut" noMatchError="Valor inválido" expression="^([0-9]+,[0-9]|[0-9]+)+$" source="{inputCredito}" property="text"/>
+	<mx:List visible="false" top="165" width="160" height="46.8" id="sugestoesModelos" left="36"></mx:List>
+	<mx:List visible="false" id="sugestoesCores" width="160" height="46.8" top="326" fontWeight="normal" left="36"></mx:List>
+</mx:TitleWindow>

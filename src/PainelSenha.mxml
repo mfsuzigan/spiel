@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="inputSenha.setFocus()" xmlns:mx="http://www.adobe.com/2006/mxml" showCloseButton="true" visible="true" layout="absolute" width="236" height="142" borderColor="#FFDC73" borderAlpha="100" title="Senha">
+	<mx:Script source="funcoesPainelSenha.as"/>
+	<mx:TextInput enter="validarSenhaEntrada(inputSenha.text, inputSenha, this)" id="inputSenha" y="37" displayAsPassword="true" horizontalCenter="0" width="136"/>
+	<mx:Button y="70" click="validarSenhaEntrada(inputSenha.text, inputSenha, this)" label="OK" width="136" enabled="true" horizontalCenter="0"/>
+	<mx:Label id="labelInfo" y="10" text="Esta operação requer uma senha." horizontalCenter="0"/>
+	<mx:String id="escopo"/>
+</mx:TitleWindow>

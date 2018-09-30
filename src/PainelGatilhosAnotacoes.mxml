@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="povoarCampos();" showCloseButton="true" visible="true" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="494" height="216" title="Editar gatilho da anotação" borderColor="#FFDC73" borderAlpha="100">
+	<mx:Script source="funcoesGatilhos.as"/>
+	<mx:Button click="confirmarSalvamentoGatilho()" id="botaoSalvarGatilho" y="142" label="Salvar" width="442" horizontalCenter="0" enabled="false"/>
+	<mx:CheckBox change="toggleCheckboxPlaca()" id="checkboxGatilhoPlaca" label="veículo (placa):" left="15" top="87"/>
+	<mx:List id="sugestoesPlaca" width="81" height="54" left="134" top="112" visible="false"/>
+	<mx:List id="sugestoesIdMovimentacao" width="54" height="44" left="410" top="112" visible="false"/>
+	<mx:CheckBox change="toggleCheckboxIdMovimentacao()" id="checkboxGatilhoIdMovimentacao" label="código de entrada:" left="271" top="87"/>
+	<mx:TextInput change="resolverInputGatilho(inputGatilhoPlaca);validarInputGatilho(event)" width="81" maxChars="8" id="inputGatilhoPlaca" enabled="false" top="87" left="134"/>
+	<mx:TextInput change="resolverInputGatilho(inputGatilhoIdMovimentacao);validarInputGatilho(event)" id="inputGatilhoIdMovimentacao" enabled="false" top="87" right="16" width="48"/>
+	<mx:Text width="454" height="38" textAlign="left" left="10" top="10">
+		<mx:text>Utilize os campos abaixo para associar a anotação selecionada a um veículo ou código de entrada, fazendo com que ela apareça automaticamente na tela.</mx:text>
+	</mx:Text>
+	<mx:Label text="Associar anotação a" fontWeight="bold" left="10" top="57"/>
+</mx:TitleWindow>

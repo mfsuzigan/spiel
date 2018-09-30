@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas show="initFinanceiro()" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*">
+	<mx:Script>
+		<![CDATA[
+			import com.spiel.Utils;
+			import mx.controls.Alert;
+			import com.spiel.Marca;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import com.spiel.Veiculo;
+			
+			include "funcoesTelaFinanceiro.as";
+			
+			[Embed(source="../resources/icones/information.png")]
+	        [Bindable]
+	        public var imgCls:Class;
+			
+		]]>
+	</mx:Script>
+	<mx:Style>
+      .estiloGrafico {
+         fontSize:14;
+      }
+    </mx:Style>
+	<mx:Label  text="Informações financeiras" fontSize="24" fontWeight="bold" top="18" left="10"/>
+	<mx:HRule height="2" top="51" left="10" right="10"/>
+	<mx:Accordion change="tratarChangeAccordion()" id="accordionFinanceiro" left="10" right="10" bottom="10" top="71" visible="true">
+		<mx:Canvas id="canvasNumeros" label="Números" width="100%" height="100%">
+			<mx:Panel borderColor="#FFDC73" borderAlpha="100" alpha="0.95"  layout="absolute" title="Período de análise" right="20" width="222" top="10" bottom="10">
+				<mx:Grid right="10" left="10" top="10" bottom="10">
+					<mx:GridRow width="100%" height="100%">
+						<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+							<mx:Label text="Início" fontWeight="bold" fontSize="28" fontFamily="Arial"/>
+						</mx:GridItem>
+					</mx:GridRow>
+					<mx:GridRow width="100%" height="100%">
+						<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+							<mx:DateChooser id="dataInicio" change="atualizarNumeros()" showToday="false"/>
+						</mx:GridItem>
+					</mx:GridRow>
+					<mx:GridRow width="100%" height="100%">
+						<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+							<mx:Label text="31/11/2011" fontWeight="bold" fontSize="12" id="labelInicioPainel"/>
+						</mx:GridItem>
+					</mx:GridRow>
+					<mx:GridRow width="100%" height="3">
+						<mx:GridItem width="100%" height="46" horizontalAlign="center">
+						</mx:GridItem>
+					</mx:GridRow>
+					<mx:GridRow width="100%" height="100%">
+						<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+							<mx:Label text="Término" fontWeight="bold" fontSize="28" fontFamily="Arial"/>
+						</mx:GridItem>
+					</mx:GridRow>
+					<mx:GridRow width="100%" height="100%">
+						<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+							<mx:DateChooser id="dataTermino" change="atualizarNumeros()" showToday="false"/>
+						</mx:GridItem>
+					</mx:GridRow>
+					<mx:GridRow width="100%" height="100%">
+						<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+							<mx:Label text="31/11/2011" fontWeight="bold" fontSize="12" id="labelTerminoPainel"/>
+						</mx:GridItem>
+					</mx:GridRow>
+				</mx:Grid>
+			</mx:Panel>
+			<mx:Grid y="10" horizontalGap="0" left="10">
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" verticalAlign="bottom">
+						<mx:Label text="De" id="labelDeEm" height="22"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label fontWeight="bold" fontSize="18" id="labelInicio" text="31/11/2011"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" verticalAlign="bottom" horizontalAlign="center">
+						<mx:Label text="a" height="22" id="labelA" width="13"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:Label text="31/01/2011" fontWeight="bold" fontSize="18" id="labelTermino"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:Canvas borderStyle="solid" horizontalCenter="-121" top="542">
+				<mx:Text text="Use os controles ao lado para selecionar um período de análise e mudar automaticamente os números acima." width="541" textAlign="center" fontWeight="normal" fontSize="12" horizontalCenter="0" id="textoInfoControles" verticalCenter="0"/>
+				<mx:Image source="{imgCls}" left="5" top="2"/>
+			</mx:Canvas>
+			<mx:Grid top="50" width="20%" horizontalCenter="-121">
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%">
+						<mx:Grid verticalGap="0" horizontalGap="0">
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" borderStyle="solid" verticalAlign="middle" horizontalAlign="center">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0" width="100%" height="100%">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosComCredito" textAlign="center"/>
+										<mx:LinkButton label="com crédito" fontWeight="normal" textAlign="center">
+											<mx:toolTip>Veículos aos quais foi atribuído certa quantia em crédito, debitada a cada movimentação de acordo com as regras de cobrança.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" borderStyle="solid" verticalAlign="middle" horizontalAlign="center">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0" width="100%" height="100%">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosPagantes" textAlign="center"/>
+										<mx:LinkButton label="LinkButton" fontWeight="normal" textAlign="center" id="labelVeiculosPagantes">
+											<mx:toolTip>Todos os veículos movimentados menos os veículos isentos.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:HRule width="45"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:VRule height="68"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" borderStyle="solid" verticalAlign="middle" horizontalAlign="center">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0" width="100%" height="100%">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosCobrancaNaEntrada" textAlign="center"/>
+										<mx:LinkButton label="cobr. na entrada" fontWeight="normal" textAlign="center">
+											<mx:toolTip>Veículos sem crédito que tiveram sua cobrança efetuada na entrada ao pátio.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%" borderStyle="solid" verticalAlign="middle" horizontalAlign="center">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0" width="100%" height="100%">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosMovimentados" textAlign="center"/>
+										<mx:LinkButton label="LinkButton" fontWeight="normal" textAlign="center" id="labelVeiculosMovimentados">
+											<mx:toolTip>Todos os veículos que passaram pelo pátio no período analisado.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:HRule width="45"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:VRule height="68"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" borderStyle="solid" verticalAlign="middle" horizontalAlign="center">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0" width="100%" height="100%">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosSemCredito" textAlign="center"/>
+										<mx:LinkButton label="sem crédito" fontWeight="normal" textAlign="center">
+											<mx:toolTip>Todos os veículos pagantes aos quais não foi creditada nenhuma quantia.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+									<mx:HRule width="45"/>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+									<mx:VRule height="68"/>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" borderStyle="solid" verticalAlign="middle" horizontalAlign="center">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosIsentos" textAlign="center"/>
+										<mx:LinkButton label="LinkButton" fontWeight="normal" textAlign="center" id="labelVeiculosIsentos">
+											<mx:toolTip>Todos os veículos explicitamente marcados como livres de cobrança.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+								<mx:GridItem width="100%" height="100%" verticalAlign="middle" horizontalAlign="center" borderStyle="solid">
+									<mx:VBox horizontalAlign="center" verticalAlign="middle" verticalGap="0" width="100%">
+										<mx:Label text="100" fontSize="30" fontWeight="bold" id="labelNroVeiculosCobrancaNaSaida" textAlign="center"/>
+										<mx:LinkButton label="cobr. na saída" fontWeight="normal" textAlign="center">
+											<mx:toolTip>Veículos sem crédito que tiveram (ou terão) sua cobrança efetuada na saída ao pátio.</mx:toolTip>
+										</mx:LinkButton>
+									</mx:VBox>
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:GridItem>
+				</mx:GridRow>				
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="25" horizontalAlign="center">
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+						<mx:VBox horizontalAlign="center" verticalGap="0">
+							<mx:HBox verticalAlign="middle" horizontalGap="0">
+								<mx:Label text="R$"/>
+								<mx:Label text="0,00" fontWeight="bold" fontSize="42" id="labelNroArrecadados"/>
+							</mx:HBox>
+							<mx:LinkButton x="82" y="391" label="LinkButton" textAlign="center" fontWeight="normal" id="labelArrecadados">
+								<mx:toolTip>Quantia arrecadada no período (não inclui créditos ou veículos que terão a cobrança efetuada na saída ainda não efetivada)</mx:toolTip>
+							</mx:LinkButton>
+						</mx:VBox>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+						<mx:VBox horizontalAlign="center" verticalGap="0">
+							<mx:HBox verticalAlign="middle" horizontalGap="0">
+								<mx:Label text="R$"/>
+								<mx:Label text="0,00" fontWeight="bold" fontSize="32" id="labelNroCreditosDistribuidos"/>
+							</mx:HBox>
+							<mx:LinkButton x="82" y="391" label="LinkButton" textAlign="center" fontWeight="normal" toolTip="Quantia distribuída em créditos no período" id="labelCreditosDistribuidos"/>
+						</mx:VBox>
+						<mx:VBox horizontalAlign="center" verticalGap="0">
+							<mx:HBox verticalAlign="middle" horizontalGap="0">
+								<mx:Label text="R$"/>
+								<mx:Label text="0,00" fontWeight="bold" fontSize="32" id="labelNroCreditosDeduzidos"/>
+							</mx:HBox>
+							<mx:LinkButton x="82" y="391" label="LinkButton" textAlign="center" fontWeight="normal" toolTip="Quantia debitada de créditos no período" id="labelCreditosDeduzidos"/>
+						</mx:VBox>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+		</mx:Canvas>
+		<mx:Canvas id="canvasGrafico" initialize="initGrafico()" label="Demonstrativo gráfico" width="100%" height="100%">
+			<mx:Grid top="365" width="487" horizontalCenter="0" bottom="70">
+				<mx:GridRow width="100%" height="39">
+					<mx:GridItem width="323" height="100%" horizontalAlign="center">
+						<mx:Label text="Início" fontWeight="bold" fontSize="28" fontFamily="Arial"/>
+					</mx:GridItem>
+					<mx:GridItem width="154.01515" height="39.015152" horizontalAlign="center">
+						<mx:Label text="Término" fontWeight="bold" fontSize="28" fontFamily="Arial"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="159">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+						<mx:DateChooser id="dataInicioG" change="povoarGrafico()" showToday="false" height="154" width="168"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+						<mx:DateChooser id="dataTerminoG" change="povoarGrafico()" showToday="false" height="154" width="168"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="22">
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+						<mx:Label text="31/11/2011" fontWeight="bold" fontSize="12" id="labelInicioPainelG"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%" horizontalAlign="center">
+						<mx:Label text="31/11/2011" fontWeight="bold" fontSize="12" id="labelTerminoPainelG"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:LineChart showDataTips="true" styleName="estiloGrafico" id="grafico" left="40" right="40" top="59" fontWeight="bold" height="288.75">
+				<mx:horizontalAxis>
+			           <mx:CategoryAxis displayName="Data" id="eixoCategorias" categoryField="dia"/>
+			        </mx:horizontalAxis>
+				<mx:series>										
+					<mx:LineSeries displayName="Movimentações" yField="nroMovimentacoes">
+					<mx:stroke>
+                		<mx:Stroke color="0x0000ff" weight="2" alpha=".8"/>
+            		</mx:stroke>
+					</mx:LineSeries>
+				</mx:series>
+			</mx:LineChart>
+			<mx:Label y="10" text="Movimentações diárias no período selecionado" fontWeight="bold" fontSize="20" horizontalCenter="0"/>
+		</mx:Canvas>
+	</mx:Accordion>
+</mx:Canvas>

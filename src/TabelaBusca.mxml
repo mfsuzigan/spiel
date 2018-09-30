@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AdvancedDataGrid doubleClickEnabled="true" doubleClick="tratarDuploClique(event)" xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.messaging.AbstractConsumer;
+			import mx.collections.ArrayCollection;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.core.Application;
+			
+			import com.spiel.Conexao;
+			import com.spiel.Utils;
+			import com.spiel.Cor;
+		
+			import flash.data.SQLResult;
+			import flash.data.SQLStatement;
+			import flash.events.SQLErrorEvent;
+			import flash.events.SQLEvent;
+			import flash.utils.Timer;
+			import mx.controls.Alert;
+			
+			
+			public function povoar	(	placa:String, marca:String, modelo:String, nomeCor:String,
+										status:String, codMovimentacao:String, dataRegistro:Date,
+										dataUltMovimentacao:Date, tipoCredito:String, qteCredito:Number,
+										tipoIsento:String
+									):void
+			{
+				var comandoRecuperar:String =
+					"SELECT " + 
+						"VEICULOS.PLACA AS P, " + 
+						"MARCAS.NOME AS MARCA, " + 
+						"MODELOS.NOME AS MODELO, " + 
+						"CORES.NOME AS COR, " + 
+						"MOVIMENTACOES.CODIGO AS CODMOV, " + 
+						"MOVIMENTACOES.ID AS IDMOV " + 
+					"FROM VEICULOS, MARCAS, MODELOS, CORES, MOVIMENTACOES " + 
+					"WHERE VEICULOS.PLACA = MOVIMENTACOES.PLACA " + 
+					"AND VEICULOS.ID_MODELO = MODELOS.ID " + 
+					"AND VEICULOS.ID_COR = CORES.ID " + 
+					"AND MODELOS.ID_MARCA = MARCAS.ID " + 
+					"AND MOVIMENTACOES.T = " + 
+						"(	SELECT MAX(T)" + 
+						"	FROM MOVIMENTACOES" + 
+						"	WHERE PLACA = P" + 
+						") "
+					;
+					
+					
+				if (placa != "")
+				{
+					comandoRecuperar += "AND VEICULOS.PLACA = '" + placa + "' ";
+				}
+				
+				if (marca != "Todas as marcas")
+				{
+					comandoRecuperar += "AND MARCAS.NOME = '" + marca + "' ";
+				}
+				
+				if (modelo != "Todos os modelos")
+				{
+					comandoRecuperar += "AND MODELOS.NOME = '" + modelo + "' ";
+				}
+				
+				if (nomeCor != "Todas as cores")
+				{
+					comandoRecuperar += "AND CORES.NOME = '" + nomeCor + "' ";
+				}
+				
+				switch (status)
+				{
+					case "No pátio":
+					
+						comandoRecuperar += "AND MOVIMENTACOES.CODIGO = 1 ";
+						break;
+					
+					case "Fora do pátio":
+					
+						comandoRecuperar += "AND MOVIMENTACOES.CODIGO = 2 ";
+						break;
+				}
+				
+				if (codMovimentacao != "" && status != "Fora do pátio")
+				{
+					comandoRecuperar += "AND MOVIMENTACOES.ID = " + codMovimentacao + " ";
+				}
+				
+				if (dataRegistro != null)
+				{
+					comandoRecuperar += "AND VEICULOS.PLACA IN " + 
+							"(	SELECT PLACA " +
+							"	FROM MOVIMENTACOES " +
+							"	WHERE CODIGO = 0 " +
+							"	AND T LIKE '" + Utils.getStringDiaSemHorario(dataRegistro) + "%'" + 
+							") ";
+				}
+				
+				if (dataUltMovimentacao != null)
+				{
+					comandoRecuperar += "AND VEICULOS.PLACA IN " + 
+							"(	SELECT PLACA AS PL" +
+							"	FROM MOVIMENTACOES " +
+							"	WHERE T = " + 
+							"	(	SELECT MAX(T) " + 
+							"		FROM MOVIMENTACOES " + 
+							"		WHERE PLACA = PL" + 
+							"	) " + 
+							"	AND T LIKE '" + Utils.getStringDiaSemHorario(dataUltMovimentacao) + "%'" + 
+							") ";
+				}
+				
+				if (tipoCredito != "Créd.: indiferente")
+				{
+					comandoRecuperar += " AND VEICULOS.CREDITO ";
+					
+					if (tipoCredito == "Créd.: maior que")
+					
+						comandoRecuperar += "> ";
+						
+					else if (tipoCredito == "Créd.: igual a")
+					
+						comandoRecuperar += "= ";
+						
+					else 
+					
+						comandoRecuperar += "< ";
+						
+					comandoRecuperar  += qteCredito.toString() + " ";
+						
+				}
+				
+				if (tipoIsento != "Isentos e não isentos")
+				{
+					comandoRecuperar += "AND VEICULOS.ISENTO = ";
+					
+					if (tipoIsento == "Isentos")
+					
+						comandoRecuperar += "1 ";
+						
+					else
+						
+						comandoRecuperar += "0 ";	
+				}
+				
+				comandoRecuperar += " ORDER BY MOVIMENTACOES.T DESC;";
+			
+				var stmt:SQLStatement = new SQLStatement();
+				var r:SQLResult;
+				var dataProvider:Array = new Array();
+				
+				stmt.text = comandoRecuperar;
+				stmt.sqlConnection = new Conexao();
+				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+				stmt.execute();				
+				
+				this.styleFunction = funcaoEstilo;
+				this.dataProvider = dataProvider;
+					
+				//timerPatio.start();
+					
+				function tratadoraRecuperar(event:SQLEvent):void
+				{
+					r = stmt.getResult();
+						
+					try
+					{	
+						if (r.data is Object)
+						{
+							
+							for (var i:Number = 0; i < r.data.length; i++)
+							{
+								var tupla:Object = new Object();
+								
+								tupla.placa = r.data[i].P.toString();
+								tupla.marca = r.data[i].MARCA.toString();								
+								tupla.modelo = r.data[i].MODELO.toString();								
+								tupla.cor = r.data[i].COR.toString();								
+								tupla.status = (r.data[i].CODMOV.toString() == "1") ? "No pátio" : "Fora do pátio";
+								tupla.idMovimentacao = (r.data[i].CODMOV.toString() == "1") ? (r.data[i].IDMOV.toString()) : "-" ;
+																
+								dataProvider.push(tupla);
+							}
+						}
+					}
+					
+					catch (erro:Error)
+					{
+						Alert.show("Erro ao tentar recuperar veículo no pátio: " + erro.getStackTrace());
+					}
+				}
+				
+				function tratadoraRecuperarErro(event:SQLErrorEvent):void
+				{
+					Alert.show("Erro ao tentar recuperar veículo no pátio: " + event.error.details);
+				}
+			}
+			
+			public function funcaoEstilo(data:Object, col:AdvancedDataGridColumn):Object
+            {
+            	if (data["cor"] == "Branco")
+            	{
+            		return {color:Number(Cor.getCodigo("Preto")), fontSize:12};
+            	}
+            	
+            	else if (data["cor"] == "Prata")
+            	{
+            		return {color:0x9ca1a5, fontWeight:"bold", fontSize:12};
+            	}
+            	
+            	else if (data["cor"] == "Cinza")
+            	{
+            		return {color:0x808284, fontWeight:"bold", fontSize:12}
+            	}
+            	
+            	else if (data["cor"] == "Outra")
+            	{
+            		return {color:Number(Cor.getCodigo("Preto")), fontSize:12};
+            	}
+            	
+            	else
+            	{
+	            	return {color:Number(Cor.getCodigo(data["cor"])), fontWeight:"bold", fontSize:12};
+	            }
+            }
+            
+            public function tratarDuploClique(event:MouseEvent):void
+            {
+            	Application.application.telaBusca.mostrarPainelEditarVeiculo(event.currentTarget.selectedItem.placa.toString());
+            }           
+			
+		]]>
+		
+	</mx:Script>
+		<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Placa" dataField="placa"/>
+			<mx:AdvancedDataGridColumn headerText="Marca" dataField="marca"/>
+			<mx:AdvancedDataGridColumn headerText="Modelo" dataField="modelo"/>
+			<mx:AdvancedDataGridColumn headerText="Cor" dataField="cor"/>
+			<mx:AdvancedDataGridColumn headerText="Status" dataField="status"/>
+			<mx:AdvancedDataGridColumn headerText="Cód. Mov." dataField="idMovimentacao"/>
+		</mx:columns>
+	</mx:AdvancedDataGrid>

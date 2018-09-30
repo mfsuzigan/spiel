@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+	    <![CDATA[
+	    	    
+	        [Embed(source="../resources/icones/bricks.png")]
+	        [Bindable]
+	        public var imgCls:Class;
+	    ]]>
+	</mx:Script>
+	<mx:Label text="spiel" fontSize="36" fontWeight="bold" verticalCenter="0" left="24"/>
+       <mx:Image verticalCenter="0" left="0" id="myImageRaw" source="{imgCls}"/>
+</mx:Canvas>

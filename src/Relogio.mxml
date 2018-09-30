@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml" initialize="initRelogio()" fontFamily="Arial" fontWeight="bold" fontSize="12">
+	<mx:Script>
+		<![CDATA[
+			
+			import mx.controls.Alert;
+			
+			public function initRelogio():void
+			{
+				var strDisplay:String = "";
+				var agora:Date;
+								
+				function atualizaDisplay(evt:TimerEvent):void
+				{
+					strDisplay = "";
+					agora = new Date();
+					strDisplay += (agora.hours >= 0 && agora.hours < 10) ? "0" + agora.hours : agora.hours;
+					strDisplay += ":";
+					strDisplay += (agora.minutes >= 0 && agora.minutes < 10) ? "0" + agora.minutes : agora.minutes;
+					strDisplay += ":";
+					strDisplay += (agora.seconds >= 0 && agora.seconds < 10) ? "0" + agora.seconds : agora.seconds;
+					text = strDisplay;
+				}
+				
+				var timer:Timer = new Timer(1000);
+				timer.addEventListener(TimerEvent.TIMER, atualizaDisplay);
+				timer.start();
+			}
+			
+		]]>
+	</mx:Script>
+</mx:Label>

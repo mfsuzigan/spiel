@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="this.setFocus();" showCloseButton="true" visible="true" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="318" height="162" title="Editar créditos do veículo" borderColor="#FFDC73" borderAlpha="100">
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import com.spiel.Movimentacao;
+			import com.spiel.Veiculo;
+			import com.spiel.Utils;	
+			
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			
+			public var v:Veiculo;	
+			
+			[Bindable]
+			public var creditoFoiMudado:Boolean = false;
+			
+			public function povoar(input:String):void
+			{
+				v = new Veiculo();
+				
+				if (Veiculo.isPlaca(input))
+				{
+					v.obterDados(input);
+				}
+					
+				else
+				{
+					v.obterDados(Movimentacao.getVeiculoAssociado(input).getPlaca());
+				}
+				
+				this.labelModelo.text = v.getNomeMarca() + " " + v.getNomeModelo();
+				this.labelPlaca.text = v.getPlaca();
+				
+				//var creditoEncontrado:Number = Number(v.getCredito());
+				
+				/*
+				this.inputCreditos.text = (creditoEncontrado%1 == 0)
+											? creditoEncontrado.toString() + ",00"
+											: creditoEncontrado.toFixed(0) + "," + (creditoEncontrado%1).toString()
+											;
+				*/
+				
+				this.inputCreditos.text = Utils.formatarDinheiro(v.getCredito());
+				
+			}
+			
+			public function salvar():void
+			{
+				if (this.validadorInputCredito.validate().type != ValidationResultEvent.VALID)
+				
+					return;
+				
+				v.setCredito(creditoValidado(this.inputCreditos.text));
+				v.flush(v.getPlaca());				
+				this.creditoFoiMudado = true;				
+				this.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));
+			}
+			
+			public function formatarTextoInputCredito(event:Event):void
+			{
+				if 	(	this.inputCreditos.text.search(",") == -1 
+					&& 	this.validadorInputCredito.validate().type == ValidationResultEvent.VALID 
+					)
+				{
+					this.inputCreditos.text = (this.inputCreditos.text == "" ? "0" : this.inputCreditos.text) + ",00";
+				}
+			}
+			
+			public function creditoValidado(valor:String):String
+			{
+				return valor.replace(",", ".");
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:Button id="botaoSalvarCreditos" y="90" click="salvar()" label="Salvar" width="278" horizontalCenter="0"/>
+	<mx:Grid y="10" left="10" right="10">
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="69" height="100%">
+				<mx:Label text="Modelo:"/>
+			</mx:GridItem>
+			<mx:GridItem width="105" height="100%">
+				<mx:Label id="labelModelo" fontWeight="bold"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="69" height="100%">
+				<mx:Label text="Placa:"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%">
+				<mx:Label id="labelPlaca" fontWeight="bold"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow width="100%" height="100%">
+			<mx:GridItem width="76" height="100%">
+				<mx:Label text="Créditos:"/>
+			</mx:GridItem>
+			<mx:GridItem width="100%" height="100%">
+				<mx:Label text="R$"/>
+				<mx:TextInput id="inputCreditos" focusOut="formatarTextoInputCredito(event);" width="46"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+	<mx:RegExpValidator invalid="botaoSalvarCreditos.enabled = false;" valid="botaoSalvarCreditos.enabled = true;" required="true" id="validadorInputCredito" trigger="{inputCreditos}" triggerEvent="change" noMatchError="Valor inválido" expression="^([0-9]+,[0-9]|[0-9]+)+$" source="{inputCreditos}" property="text"/>
+</mx:TitleWindow>

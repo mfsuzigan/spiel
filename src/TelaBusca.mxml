@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas show="initBusca()" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*">
+	<mx:Script>
+		<![CDATA[
+			import com.spiel.Utils;
+			import mx.controls.Alert;
+			import com.spiel.Marca;
+			import mx.controls.Alert;
+			
+			import mx.core.Application;
+			
+			include "funcoesTelaBusca.as";
+			
+			[Embed(source="../resources/icones/delete.png")]			
+	        [Bindable]
+	        public var imgDelete:Class;
+	        
+	        [Embed(source="../resources/icones/printer48.png")]
+	        [Bindable]
+	        public var imgPrinter48:Class;	        
+						
+		]]>
+	</mx:Script>
+	<mx:Style>
+		.estilo {
+			fontSize:16;
+			fontFamily:Verdana;
+			fontWeight:bold;
+		}
+		
+	</mx:Style>
+	<mx:Label click="botaoApagarRegistroBusca.visible = !botaoApagarRegistroBusca.visible;" text="Buscar veículo" fontSize="24" fontWeight="bold" top="18" left="10" width="233"/>
+	<mx:HRule height="2" top="51" left="10" right="10"/>
+	<ns1:TabelaBusca textAlign="center" id="tabelaBusca" right="316.09998" left="10.4" top="99.05" bottom="10"/>
+	<mx:Text text="Nenhum veículo correspondente às definições dos filtros." fontWeight="bold" textAlign="left" id="textoNroVeiculosBusca" height="20.05" y="71" left="10.4" right="293.59998"/>
+	<mx:Canvas top="99.05" bottom="0" right="-3.0517578E-5" width="308.1">
+		<mx:Panel layout="absolute" title="Filtros de exibição" borderColor="#FFDC73" alpha="1.0" borderAlpha="100" backgroundAlpha="1.0" height="429.95" verticalCenter="-40" right="10" left="0">
+			<mx:ComboBox text="Todas as cores" left="10" id="cbCorBusca" top="137" change="atualizarTabelaBusca()" width="258"></mx:ComboBox>
+			<mx:ComboBox text="Todas as marcas" change="atualizarComboboxBuscaModelos();atualizarTabelaBusca()" left="10" id="cbMarcaBusca" top="77" width="258"></mx:ComboBox>
+			<mx:ComboBox y="107" text="Todos os modelos" left="10" id="cbModeloBusca" change="atualizarTabelaBusca()" width="258"></mx:ComboBox>
+			<mx:ComboBox text="Dentro e fora do pátio" change="toggleCodMovimentacao();atualizarTabelaBusca()" left="10" id="cbStatusBusca" top="178.95" width="258"></mx:ComboBox>
+			<mx:ComboBox change="toggleStepperCredito();atualizarTabelaBusca()" text="Créd.: indiferente" width="142" left="10" id="cbCreditoBusca" top="318.95000000000005"></mx:ComboBox>
+			<mx:HBox horizontalAlign="center" verticalAlign="middle" right="10" top="318.95" width="108">
+				<mx:Label text="R$"/>
+				<mx:NumericStepper enabled="false" id="stepperCreditoBusca" keyUp="atualizarTabelaBusca()" change="atualizarTabelaBusca()" width="72"/>
+			</mx:HBox>
+			<mx:ComboBox text="Isentos e não isentos" left="10" right="10" id="cbIsentoBusca" top="358" change="atualizarTabelaBusca()"></mx:ComboBox>
+			<mx:HBox horizontalCenter="0" verticalAlign="middle" top="47">
+				<mx:Label text="Placa:" fontWeight="bold"/>
+				<mx:TextInput width="89" id="inputPlacaBusca" change="resolverInputPlacaBusca();" fontSize="12"/>
+			</mx:HBox>
+			<mx:Button label="Limpar" left="10" right="10" id="botaoLimparFiltrosBusca" click="resetFiltros()" top="10"/>
+			<mx:List id="sugestoesPlacaBusca" visible="false" width="81" height="58" x="119" y="71"/>
+			<mx:Grid y="218.95" right="10" left="10">
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+						<mx:Label text="Cód. de Movimentação:" fontWeight="bold"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:TextInput enabled="true" id="inputMovimentacaoBusca" change="resolverInputMovimentacaoBusca();" fontSize="12" width="100%"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+						<mx:Label text="Registrado em:" fontWeight="bold"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:DateField formatString="DD/MM/YYYY" todayColor="#43BD18" dayNames="{Application.application.nomesDeDias}" monthNames="{Application.application.nomesDeMeses}" id="dFRegistroBusca" change="atualizarTabelaBusca()"/>
+						<mx:Image source="{imgDelete}" click="dFRegistroBusca.selectedDate = null;atualizarTabelaBusca()"/>
+					</mx:GridItem>
+				</mx:GridRow>
+				<mx:GridRow width="100%" height="100%">
+					<mx:GridItem width="100%" height="100%" verticalAlign="middle">
+						<mx:Label text="Últ. movimentação em:" fontWeight="bold"/>
+					</mx:GridItem>
+					<mx:GridItem width="100%" height="100%">
+						<mx:DateField dateChooserStyleName="estiloDateField" formatString="DD/MM/YYYY" todayColor="#43BD18" dayNames="{Application.application.nomesDeDias}" monthNames="{Application.application.nomesDeMeses}" id="dFUltMovimentacaoBusca" change="atualizarTabelaBusca()"/>
+						<mx:Image source="{imgDelete}" click="dFUltMovimentacaoBusca.selectedDate = null;atualizarTabelaBusca()"/>
+					</mx:GridItem>
+				</mx:GridRow>
+			</mx:Grid>
+			<mx:List id="sugestoesMovimentacaoBusca" visible="false" x="178" y="241.95" width="90" height="103.05"></mx:List>			
+		</mx:Panel>
+		<mx:Button click="trataCliqueBotaoEditar()" label="Editar dados" icon="@Embed(source='../resources/icones/information.png')" enabled="false" id="botaoVisualizarDadosBusca" left="0" right="10.100006" top="0" fontSize="12"/>
+		<mx:Button visible="false" click="Application.application.mostrarPainelSenha('apagarVeiculo');" label="Excluir veículo" icon="@Embed(source='../resources/icones/delete.png')" enabled="false" id="botaoApagarRegistroBusca" left="0" right="10.100006" top="30" fontSize="12"/>
+	</mx:Canvas>
+	<mx:Image visible="false" source="{imgPrinter48}" width="48" height="48" top="10" id="imagemImpressoraPequena" right="137.09998"/>
+	<mx:Label visible="false" text="imprimindo comprovante corretivo..." fontWeight="bold" fontSize="18" color="#137599" right="193.09998" id="labelComprovanteCorretivo" top="24"/>
+</mx:Canvas>

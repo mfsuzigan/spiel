@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:DataGrid textAlign="center" xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+		
+			import com.spiel.Conexao;
+			import com.spiel.Utils;
+		
+			import flash.data.SQLResult;
+			import flash.data.SQLStatement;
+			import flash.events.SQLErrorEvent;
+			import flash.events.SQLEvent;
+			import mx.controls.Alert;
+			
+			
+			public function povoar(placa:String, inicio:String, termino:String):void
+			{
+				var comandoRecuperar:String = "" +
+					"SELECT T, PLACA, TIPO, MOVIMENTACOES.CODIGO, MOVIMENTACOES.ID AS IDMOV, TARIFA, ID, CRED_DEDUZIDO " + 
+					"FROM MOVIMENTACOES, TIPOS_MOV " +
+					"WHERE MOVIMENTACOES.CODIGO = TIPOS_MOV.CODIGO " +
+					((placa is String && placa != "") ? "AND PLACA = '" + placa + "' " : " ") +
+					((inicio is String && !(termino is String)) ? "AND T > '" + inicio + "' " : " ") +					
+					((!(inicio is String) && termino is String) ? "AND T < '" + inicio + "' " : " ") +
+					((inicio is String && termino is String) ? "AND T BETWEEN '" + inicio + "' AND '" + termino + "' " : " ") +
+					"ORDER BY T DESC;";
+			
+				/*
+				if (!(placa is Object) && !(inicio is Object) && !(termino is Object))
+				{
+					comandoRecuperar = "" + 
+					"SELECT T, PLACA, TIPO, MOVIMENTACOES.CODIGO, MOVIMENTACOES.ID AS IDMOV, TARIFA, ID, CRED_DEDUZIDO " + 
+					"FROM MOVIMENTACOES, TIPOS_MOV " +
+					"WHERE MOVIMENTACOES.CODIGO = TIPOS_MOV.CODIGO ORDER BY T DESC;";
+				}
+				*/
+							
+				var stmt:SQLStatement = new SQLStatement();
+				var r:SQLResult;
+				var dataProvider:Array = new Array();
+				
+				stmt.text = comandoRecuperar;
+				stmt.sqlConnection = new Conexao();
+				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+				stmt.execute();
+				
+				this.dataProvider = dataProvider;
+					
+				function tratadoraRecuperar(event:SQLEvent):void
+				{
+					r = stmt.getResult();
+						
+					try
+					{	
+						if (r.data is Object)
+						{
+							
+							for (var i:Number = 0; i < r.data.length; i++)
+							{
+								var tupla:Object = new Object();
+								tupla.dia = Utils.dataFormatada(r.data[i].T.toString()).substr(0, 10);
+								tupla.hora = Utils.dataFormatada(r.data[i].T.toString()).substr(11, 18);
+								tupla.tipoMovimentacao = r.data[i].TIPO.toString();
+								tupla.idMovimentacao = (r.data[i].TIPO.toString() == "Entrada") ? r.data[i].IDMOV.toString() : "-";
+								tupla.tarifa = (r.data[i].CODIGO.toString() == "0") ? "-" : Utils.formatarDinheiro(r.data[i].TARIFA.toString());
+								tupla.placa = r.data[i].PLACA.toString();
+								tupla.creditoDeduzido = (r.data[i].CRED_DEDUZIDO.toString() == "1") ? "Sim" : "Não";
+								
+								dataProvider.push(tupla);
+							}
+						}
+					}
+					
+					catch (erro:Error)
+					{
+						Alert.show("Erro ao tentar recuperar movimentações: " + erro.getStackTrace());
+					}
+				}
+				
+				function tratadoraRecuperarErro(event:SQLErrorEvent):void
+				{
+					Alert.show("Erro ao tentar recuperar movimentações: " + event.error.details);
+				}
+			}
+			
+			public function povoarUltimasAcoes(inicio:String, termino:String):void
+			{
+				var comandoRecuperar:String =
+				"SELECT T AS T0, PLACA AS P, TIPO, MOVIMENTACOES.CODIGO, MOVIMENTACOES.ID AS IDMOV, TARIFA, ID, CRED_DEDUZIDO " + 
+				"FROM MOVIMENTACOES, TIPOS_MOV " +
+				"WHERE MOVIMENTACOES.CODIGO = TIPOS_MOV.CODIGO " +
+				"AND T0 = (SELECT MAX(T) FROM MOVIMENTACOES WHERE PLACA = P) " +
+				((inicio is String && termino is String) ? "AND T0 BETWEEN '" + inicio + "' AND '" + termino + "' " : " ") +
+				"ORDER BY T0 DESC;";
+			
+				var stmt:SQLStatement = new SQLStatement();
+				var r:SQLResult;
+				var dataProvider:Array = new Array();
+				
+				stmt.text = comandoRecuperar;
+				stmt.sqlConnection = new Conexao();
+				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+				stmt.execute();
+				
+				this.dataProvider = dataProvider;
+					
+				function tratadoraRecuperar(event:SQLEvent):void
+				{
+					r = stmt.getResult();
+						
+					try
+					{	
+						if (r.data is Object)
+						{
+								
+							for (var i:Number = 0; i < r.data.length; i++)
+							{
+								var tupla:Object = new Object();
+								tupla.dia = Utils.dataFormatada(r.data[i].T0.toString()).substr(0, 10);
+								tupla.hora = Utils.dataFormatada(r.data[i].T0.toString()).substr(11, 18);
+								tupla.tipoMovimentacao = r.data[i].TIPO.toString();
+								tupla.idMovimentacao = (r.data[i].TIPO.toString() == "Entrada") ? r.data[i].IDMOV.toString() : "-";
+								tupla.tarifa = (r.data[i].CODIGO.toString() == "0") ? "-" : Utils.formatarDinheiro(r.data[i].TARIFA.toString());
+								tupla.placa = r.data[i].P.toString();
+								tupla.creditoDeduzido = (r.data[i].CRED_DEDUZIDO.toString() == "1") ? "Sim" : "Não";
+								tupla.id = r.data[i].ID.toString();
+								tupla.t = r.data[i].T0;
+								tupla.codigo = r.data[i].CODIGO.toString();								
+																
+								dataProvider.push(tupla);
+							}
+						}
+					}
+					
+					catch (erro:Error)
+					{
+						Alert.show("Erro ao tentar recuperar movimentações desta instância da aplicação: " + erro.getStackTrace());
+					}
+				}
+				
+				function tratadoraRecuperarErro(event:SQLErrorEvent):void
+				{
+					Alert.show("Erro ao tentar recuperar movimentações desta instância da aplicação: " + event.error.details);
+				}
+			}
+			
+			public function adaptarAPainelDireito():void
+			{
+				this.colunaMovimentacao.headerText = "Reg.";
+				this.colunaTarifa.headerText = "R$";
+				this.colunaDeducaoCredito.visible = false;
+				this.colunaVeiculo.visible = false;
+				
+				this.colunaVeiculo.width = 75;
+				this.colunaMovimentacao.width = 55;
+				this.colunaDia.width = 80;
+				this.colunaHora.width = 65;
+				this.colunaVeiculo.width = 75;
+				this.colunaTarifa.width = 43;
+			}
+		]]>
+	</mx:Script>
+	<mx:columns>
+		<mx:DataGridColumn id="colunaVeiculo" headerText="Veículo"  width="75" dataField="placa"/>
+		<mx:DataGridColumn id="colunaMovimentacao" headerText="Movimentação" width="110" dataField="tipoMovimentacao"/>	
+		<mx:DataGridColumn id="colunaIdMovimentacao" headerText="Cód." width="43" dataField="idMovimentacao"/>	
+		<mx:DataGridColumn id="colunaDia" headerText="Dia" width="80" dataField="dia"/>
+		<mx:DataGridColumn id="colunaHora" headerText="Hora" width="75" dataField="hora"/>	
+		<mx:DataGridColumn id="colunaTarifa" headerText="Tarifa (R$)" dataField="tarifa" width="85"/>
+		<mx:DataGridColumn id="colunaDeducaoCredito" headerText="Créd. deduzidos?" dataField="creditoDeduzido" width="110"/>			
+	</mx:columns>
+</mx:DataGrid>

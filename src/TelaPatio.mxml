@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas hide="tabelaPatio.desativarTimer();" show="initPatio()" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*">
+	<mx:Script>
+		<![CDATA[
+			import com.spiel.Utils;
+			import mx.controls.Alert;
+			import com.spiel.Marca;
+			import mx.controls.Alert;
+						
+			include "funcoesTelaPatio.as";
+		]]>
+	</mx:Script>
+	<mx:Label  text="Veículos no pátio" fontSize="24" fontWeight="bold" top="18" left="10" width="233"/>
+	<mx:HRule height="2" top="51" left="10" right="240"/>
+	
+	<mx:Label text="Mostrando " top="71" fontWeight="bold" id="labelNroVeiculos" left="10"/>
+	<ns1:TabelaPatio textAlign="center" id="tabelaPatio" x="107" y="142" left="10" right="240" bottom="10" top="97" fontSize="9"/>
+	<mx:Button label="Atualizar" click="tabelaPatio.funcaoTimerPatio(null)" right="240" top="69">
+		<mx:icon>@Embed(source='../resources/icones/time.png')</mx:icon>
+	</mx:Button>
+	<mx:Canvas bottom="10" top="51" right="10" width="222">
+		<mx:Panel borderColor="#FFDC73" layout="absolute" title="Filtros de exibição" borderAlpha="1.0" height="654" right="0" left="0" top="0">
+			<mx:ComboBox width="147" horizontalCenter="0" id="cbMarcaPatio" change="atualizarComboboxModelos();atualizarTabelaPatio()" top="115"></mx:ComboBox>
+			<mx:TextInput change="resolverInputPlacaPatio()" width="92" horizontalCenter="0" id="inputPlacaPatio" top="64" maxChars="8" fontSize="12" fontWeight="normal"/>
+			<mx:Label text="Placa:" horizontalCenter="0" fontWeight="bold" top="47"/>
+			<mx:Label text="Marca:" horizontalCenter="0" fontWeight="bold" top="94"/>
+			<mx:Label text="Modelo:" horizontalCenter="0" fontWeight="bold" top="144"/>
+			<mx:Label text="Cor:" horizontalCenter="0" fontWeight="bold" top="195"/>
+			<mx:ComboBox width="147" horizontalCenter="0" id="cbModeloPatio" change="atualizarTabelaPatio()" top="165"></mx:ComboBox>
+			<mx:ComboBox width="147" horizontalCenter="0" id="cbCorPatio" change="atualizarTabelaPatio()" top="215"></mx:ComboBox>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" x="46" y="288" width="53" enabled="false" minimum="0" maximum="23" id="stepperIntervaloMinH"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" x="120" y="288" width="51" enabled="false" minimum="0" maximum="59" id="stepperIntervaloMinM"/>
+			<mx:Label x="99" y="292" text=":" textAlign="center"/>
+			<mx:Label x="14" y="292" text="de:"/>
+			<mx:Label x="10" y="327" text="até:"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" x="46" y="323" width="53" enabled="false" minimum="0" maximum="23" id="stepperIntervaloMaxH"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" x="120" y="323" width="51" enabled="false" minimum="0" maximum="59" id="stepperIntervaloMaxM"/>
+			<mx:Label x="99" y="327" text=":" textAlign="center"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" y="484" width="61" x="10" enabled="false" id="stepperTempoPatioMaxH" minimum="0" maximum="10000" stepSize="1"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" y="484" width="51" x="96" enabled="false" id="stepperTempoPatioMaxM" minimum="0" maximum="59" stepSize="1"/>
+			<mx:Label y="486" text="h" x="79"/>
+			<mx:Label y="486" text="min" x="155"/>
+			<mx:CheckBox change="atualizarTabelaPatio()" label="Cobrança na entrada" horizontalCenter="0" selected="true" id="checkboxCobrancaNaEntradaPatio" top="530"/>
+			<mx:CheckBox change="atualizarTabelaPatio()" label="Cobrança na saída" horizontalCenter="0" selected="true" id="checkboxCobrancaNaSaidaPatio" top="555"/>
+			<mx:CheckBox change="atualizarTabelaPatio()" label="Isentos" horizontalCenter="0" selected="true" id="checkboxIsentosPatio" top="582"/>
+			<mx:CheckBox change="toggleHorarios();atualizarTabelaPatio()" label="Intervalo de horários:" horizontalCenter="0" fontWeight="bold" id="checkboxIntervalo" top="258"/>
+			<mx:CheckBox change="toggleTempoMenorQue();atualizarTabelaPatio()" label="menor que:" horizontalCenter="0" id="checkboxTempoPatioMax" top="454"/>
+			<mx:Button y="8" label="Limpar" width="170" id="botaoLimparFiltros" click="resetFiltros()" horizontalCenter="0"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" y="420" width="61" x="10" enabled="false" id="stepperTempoPatioMinH" minimum="0" maximum="10000" stepSize="1"/>
+			<mx:NumericStepper keyUp="atualizarTabelaPatio()" change="atualizarTabelaPatio()" y="420" width="51" x="96" enabled="false" id="stepperTempoPatioMinM" minimum="0" maximum="59" stepSize="1"/>
+			<mx:Label y="422" text="h" x="79"/>
+			<mx:Label y="422" text="min" x="155"/>
+			<mx:CheckBox change="toggleTempoMaiorQue();atualizarTabelaPatio()" label="maior que:" horizontalCenter="0" id="checkboxTempoPatioMin" top="390"/>
+			<mx:Label text="Tempo no pátio" fontWeight="bold" horizontalCenter="0" top="364"/>
+			<mx:List id="sugestoesPlacaPatio" width="81" height="54" left="50" top="89" visible="false"/>
+		</mx:Panel>
+	</mx:Canvas>
+</mx:Canvas>

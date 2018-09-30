@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication keyDown="verificarEscape(event)" applicationComplete="init()" title="Spiel" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#FFFFFF, #FFFFFF]" xmlns:ns1="*" titleIcon="@Embed(source='../resources/icones/bricks.png')">
+	<mx:Script source="funcoesApp.as"/>
+	<mx:Script>
+		<![CDATA[
+		
+			import mx.controls.Alert;
+		
+			[Bindable]
+			public var maximoHorasNoEstacionamento:Number = 0;
+			
+			[Bindable]
+			public var anotacaoSelecionada:Object;
+			
+			[Bindable]
+			public var atualizacaoGatilho:Boolean;
+			
+			[Bindable]
+			public var indiceAnotacaoSelecionada:Number = -1;
+			
+			[Bindable]
+			public var placaGatilhoAnotacaoNova:String = "";
+			
+			[Bindable]
+			public var idMovimentacaoGatilhoAnotacaoNova:String = "-1";
+			
+			[Bindable]
+			public var painelGatilhos:PainelGatilhosAnotacoes;
+			
+			[Bindable]
+			public var nomesDeDias:Array = ["D", "S", "T", "Q", "Q", "S", "S"];
+			
+			[Bindable]
+			public var nomesDeMeses:Array = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+			
+			[Bindable]
+			public var nroVeiculosNoPatioHoje:Number = 0;
+			
+			[Bindable]
+			public var nroBaixas:Number = 0;
+			
+			[Bindable]
+			public var hoje:String;
+		
+		]]>
+	</mx:Script>
+	<mx:HBox height="100%" width="100%" horizontalGap="0" >
+		<mx:Canvas width="22%" height="100%" id="frameEsquerdo" backgroundColor="#EEEBEB">
+			<ns1:PainelEsquerdo horizontalCenter="0" id="painel"/>
+			<mx:VRule right="0" height="100%"/>
+		</mx:Canvas>
+		<mx:Canvas width="100%" height="100%" id="frameDireito"/>
+	</mx:HBox>
+	<mx:WipeLeft id="wipeIn" duration="200"/>
+    <mx:WipeRight id="wipeOut" duration="100"/>
+    <mx:WipeUp id="wipeUp" duration="1000"/>
+    <mx:WipeDown id="wipeDown" duration="1000"/>    
+    <ns1:CanvasAguarde horizontalCenter="0" verticalCenter="0" id="mensagemAguarde" visible="false">
+    </ns1:CanvasAguarde>
+</mx:WindowedApplication>

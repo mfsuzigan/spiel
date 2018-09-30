@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow initialize="initCores(this)" showCloseButton="true" visible="true" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" title="Escolha uma cor:" borderColor="#FFDC73" borderAlpha="100">
+	<mx:Script source="funcoesCores.as"/>
+	<mx:Grid borderColor="#000000" borderStyle="none" top="20" bottom="20" right="20" left="20">
+		<mx:GridRow height="50">
+			<mx:GridItem click="selecionarCor(event);" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="80" id="Prata" borderColor="#B7BABC">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="80" id="Preto">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" borderColor="#B7BABC" width="80" id="Branco" borderStyle="solid">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="80" id="Cinza">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="80" id="Vermelho">
+			</mx:GridItem>			
+		</mx:GridRow>
+		<mx:GridRow height="22">
+			<mx:GridItem id="GIPrata" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Prata" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIPreto" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Preto" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIBranco" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Branco" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GICinza" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Cinza" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIVermelho" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Vermelho" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow height="50">
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="80" id="Bege">
+			</mx:GridItem>	
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Marrom">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Verde">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Amarelo">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Ouro">
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow height="22">
+			<mx:GridItem id="GIBege" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Bege" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIMarrom" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Marrom" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIVerde" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Verde" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIAmarelo" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Amarelo" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIOuro" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Ouro" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+		</mx:GridRow>
+			<mx:GridRow height="50" horizontalAlign="center">			
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Rosa">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Roxo">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Chumbo">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Urano">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="38"  id="Vinho">
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow height="22">			
+			<mx:GridItem id="GIRosa" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Rosa" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIRoxo" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Roxo" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIChumbo" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Chumbo" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIUrano" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Urano" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIVinho" click="selecionarCor(event)" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Vinho" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow height="50" horizontalAlign="center">			
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Azul">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Laranja">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Champanhe">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="50" id="Lilas">
+			</mx:GridItem>
+			<mx:GridItem click="selecionarCor(event)" mouseOver="highlightGridBG(event)" mouseOut="downlightGridBG(event)" width="38"  id="Outra" horizontalAlign="center" verticalAlign="middle" borderStyle="solid">
+				<mx:Label text="!" textAlign="center" fontSize="29" fontWeight="bold"/>
+			</mx:GridItem>
+		</mx:GridRow>
+		<mx:GridRow height="22">
+			<mx:GridItem id="GIAzul" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Azul" fontSize="10" fontWeight="bold" textAlign="center"/>
+			</mx:GridItem>
+			<mx:GridItem id="GILaranja" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Laranja" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIChampanhe" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Champanhe" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GILilas" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Lilás" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+			<mx:GridItem id="GIOutra" click="selecionarCor(event)" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" mouseOver="highlightGrid(event)" mouseOut="downlightGrid(event)">
+				<mx:Label text="Outra" fontSize="10" fontWeight="bold"/>
+			</mx:GridItem>
+		</mx:GridRow>
+	</mx:Grid>
+</mx:TitleWindow>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:ns1="*" backgroundColor="#EEEBEB" height="100%">
+	<mx:Script>
+		<![CDATA[
+			
+			import mx.core.Application;
+			import com.spiel.Utils;
+			
+			include "funcoesApp.as";
+		]]>
+	</mx:Script>	
+	<mx:Label toolTip="Número de veículos que entraram mas ainda não saíram do pátio hoje" fontSize="36" fontWeight="bold" textAlign="center" id="labelCarrosNoPatioAgoraHoje" horizontalCenter="0" top="457"/>
+	<mx:Label fontSize="12" id="labelCarrosNoPatioAgoraHojeTexto" y="515" horizontalCenter="0" textAlign="center"/>
+	<mx:Label toolTip="Número de veículos que saíram do pátio desde o início do dia de hoje" fontSize="36" fontWeight="bold" textAlign="center" id="labelBaixasHoje" y="543" horizontalCenter="0"/>
+	<mx:Label fontSize="12" id="labelBaixasHojeTexto" y="601" horizontalCenter="0" textAlign="center"/>
+	<mx:Label fontSize="12" id="labelTotalHojeTexto" y="687" horizontalCenter="0" textAlign="center" text="veículos movimentados"/>
+	<mx:Label toolTip="Total de veículos movimentados hoje" fontSize="36" fontWeight="bold" textAlign="center" id="labelTotalHoje" y="629" horizontalCenter="0"/>
+	<mx:Label text="Dados de hoje:" horizontalCenter="0" top="431"/>
+	<!--<mx:Label toolTip="Dinheiro arrecadado hoje, exceto créditos e suas deduções" fontSize="36" fontWeight="bold" textAlign="center" id="labelArrecadacaoHoje" y="631" horizontalCenter="0"/>
+	<mx:Label fontSize="12" id="labelArrecadacaoHojeTexto" y="689" horizontalCenter="0"/>-->
+	<mx:VBox horizontalAlign="center" horizontalCenter="0" top="76">
+		<ns1:Relogio id="relogio" horizontalCenter="0"/>
+		<mx:DateChooser dayNames="{Application.application.nomesDeDias}" monthNames="{Application.application.nomesDeMeses}" height="159" todayColor="#43BD18" headerColors="{[0xFFDC73, 0xFFDC73]}" width="92%"/>
+	</mx:VBox>
+	<ns1:LogoSpiel horizontalCenter="0" top="10">
+	</ns1:LogoSpiel>
+	<mx:Panel width="92%" height="133" layout="absolute" id="painelDeControle" title="Ir para..." horizontalCenter="0" borderColor="#FFDC73" alpha="1.0" top="280" borderAlpha="100">
+		<mx:VBox horizontalAlign="center" horizontalCenter="0" verticalCenter="0">
+			<mx:Script>
+			<![CDATA[
+				
+				import mx.controls.Alert;
+				
+				public function mudaLabelPainelDeControle(event:MouseEvent):void
+				{
+					switch((Button)(event.target).id)
+					{
+						case "botaoGerenciarTransito":
+						
+							labelPainelDeControle.text = "Trânsito";
+							break;
+							
+						case "botaoVeiculosNoPatio":
+						
+							labelPainelDeControle.text = "Pátio";
+							break;
+							
+						case "botaoPesquisarVeiculos":
+						
+							labelPainelDeControle.text = "Busca";
+							break;
+							
+						case "botaoRelatorios":
+						
+							labelPainelDeControle.text = "Relatórios";
+							break;
+							
+						case "botaoConfiguracoes":
+						
+							labelPainelDeControle.text = "Configurações";
+							break;
+							
+						case "botaoFinanceiro":
+						
+							labelPainelDeControle.text = "Financeiro";
+							break;
+					}
+				}
+				
+				public function resetLabelPainelDeControle():void
+				{
+					labelPainelDeControle.text = "";
+				}
+				
+			]]>
+		</mx:Script>
+			<mx:Label fontWeight="bold" id="labelPainelDeControle"/>
+			<mx:HBox>
+				<mx:Button click="mostrarTela(TELA_TRANSITO)" id="botaoGerenciarTransito" icon="@Embed(source='../resources/icones/car.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
+				<mx:Button click="mostrarTela(TELA_BUSCA)" id="botaoPesquisarVeiculos" icon="@Embed(source='../resources/icones/magnifier.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
+				<mx:Button click="mostrarTela(TELA_PATIO)" id="botaoVeiculosNoPatio" icon="@Embed(source='../resources/icones/shield.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
+			</mx:HBox>
+			<mx:HBox horizontalAlign="center">
+				<mx:Button click="mostrarPainelRelatorios()" id="botaoRelatorios" icon="@Embed(source='../resources/icones/page_paste.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
+				<mx:Button click="mostrarTela(TELA_CONFIGURACOES)" id="botaoConfiguracoes" icon="@Embed(source='../resources/icones/wrench.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
+				<mx:Button click="mostrarTela(TELA_FINANCEIRO)" id="botaoFinanceiro" icon="@Embed(source='../resources/icones/money_dollar.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:Panel>
+</mx:Canvas>
