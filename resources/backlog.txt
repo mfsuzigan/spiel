@@ -1,4 +1,4 @@
-DeleÁ„o de veÌculo individual pela placa
-DeleÁ„o de veÌculos em massa por data
-Melhorar a execuÁ„o do auxiliar de impress„o
+Dele√ß√£o de ve√≠culo individual pela placa
+Dele√ß√£o de ve√≠culos em massa por data
+Melhorar a execu√ß√£o do auxiliar de impress√£o
 Gastos auxiliares
