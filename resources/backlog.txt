@@ -1,0 +1,4 @@
+Deleção de veículo individual pela placa
+Deleção de veículos em massa por data
+Melhorar a execução do auxiliar de impressão
+Gastos auxiliares
