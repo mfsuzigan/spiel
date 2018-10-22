@@ -9,6 +9,7 @@ package com.spiel
 	
 	public class Veiculo
 	{
+		private var id:Number;
 		private var placa:String;
 		
 		private var idModelo:String;
@@ -35,6 +36,16 @@ package com.spiel
 			conexao = new Conexao();
 			stmt = new SQLStatement();
 			stmt.sqlConnection = conexao;
+		}
+		
+		public function getId():Number 
+		{
+			return this.id;	
+		}
+		
+		public function setId(id:Number):void
+		{
+			this.id = id;
 		}
 		
 		// Setter e getter para placa
@@ -369,6 +380,7 @@ package com.spiel
 			var idCorObtido:String;
 			var isentoObtido:String
 			var creditoObtido:String;
+			var idObtido:Number;
 			var creditoAnterior:String;
 			
 			var r:SQLResult;
@@ -388,6 +400,7 @@ package com.spiel
 				this.setIdCor(idCorObtido);
 				this.setIsento(isentoObtido);
 				this.setCredito(creditoObtido);
+				this.setId(idObtido);
 			}
 									
 			return (r is Object && r.data is Object);
@@ -402,6 +415,7 @@ package com.spiel
 					idCorObtido = r.data[0].ID_COR;
 					isentoObtido = r.data[0].ISENTO;
 					creditoObtido = r.data[0].CREDITO;
+					idObtido = Number(r.data[0].ID);
 				}
 			}
 			

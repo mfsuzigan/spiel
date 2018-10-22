@@ -24,7 +24,7 @@
 										dataUltMovimentacao:Date, tipoCredito:String, qteCredito:Number,
 										tipoIsento:String
 									):void
-			{
+			{/*
 				var comandoRecuperar:String =
 					"SELECT " + 
 						"VEICULOS.PLACA AS P, " + 
@@ -39,6 +39,27 @@
 					"AND VEICULOS.ID_COR = CORES.ID " + 
 					"AND MODELOS.ID_MARCA = MARCAS.ID " + 
 					"AND MOVIMENTACOES.T = " + 
+						"(	SELECT MAX(T)" + 
+						"	FROM MOVIMENTACOES" + 
+						"	WHERE PLACA = P" + 
+						") "
+					;*/
+					
+						var comandoRecuperar:String =
+					"SELECT " + 
+						"VEICULOS.PLACA AS P, " + 
+						"MARCAS.NOME AS MARCA, " + 
+						"MODELOS.NOME AS MODELO, " + 
+						"CORES.NOME AS COR, " + 
+						"MOVIMENTACOES.CODIGO AS CODMOV, " + 
+						"MOVIMENTACOES.ID AS IDMOV " + 
+					"FROM VEICULOS " + 
+					"INNER JOIN MOVIMENTACOES ON MOVIMENTACOES.ID_VEICULO = VEICULOS.ID " +
+					"INNER JOIN MODELOS ON MODELOS.ID = VEICULOS.ID_MODELO " +
+					"INNER JOIN MARCAS ON MARCAS.ID = MODELOS.ID_MARCA " +
+					"INNER JOIN CORES ON CORES.ID = VEICULOS.ID_COR " +
+		
+					"WHERE MOVIMENTACOES.T = " + 
 						"(	SELECT MAX(T)" + 
 						"	FROM MOVIMENTACOES" + 
 						"	WHERE PLACA = P" + 

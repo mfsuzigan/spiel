@@ -65,7 +65,7 @@ public function initBusca():void
 {
 	
 	resetFiltros();
-	escreverLabelNroVeiculos();
+	//escreverLabelNroVeiculos();
 	
 	botaoApagarRegistroBusca.enabled = false;
 	botaoVisualizarDadosBusca.enabled = false;

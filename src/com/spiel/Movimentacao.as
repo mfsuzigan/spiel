@@ -194,14 +194,15 @@ package com.spiel
 			
 			var comandoInserir:String =
 				"INSERT " + 
-				"INTO MOVIMENTACOES (T, PLACA, CODIGO, CODIGO0, TARIFA, CRED_DEDUZIDO, VEICULO_ISENTO) " +
+				"INTO MOVIMENTACOES (T, PLACA, CODIGO, CODIGO0, TARIFA, CRED_DEDUZIDO, VEICULO_ISENTO, ID_VEICULO) " +
 				"VALUES ('" + 	this.t 									+ "', " + 
 						"'" + 	this.veiculoAssociado.getPlaca() 	+ "', "  
 							+	this.codigoMovimentacao				+ ", "	
 							+	this.codigoAnterior					+ ", " 	
 							+	this.tarifaAssociada				+ ", "
-							+	(this.isCreditoDeduzido ? "1" : "0")+ ", "
-							+	this.veiculoAssociado.getIsento()	+
+							+	(this.isCreditoDeduzido ? "'1'" : "'0'")+ ", "
+							+	this.veiculoAssociado.getIsento()	+ ", "
+							+	this.veiculoAssociado.getId()		+
 				");";
 				
 			stmt.text = comandoInserir;
