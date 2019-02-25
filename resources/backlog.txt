@@ -14,3 +14,8 @@ Permitir outros gastos em relatórios
 
 -Probl. internos
 Chave primária
+
+Ações:
+Uso da placa como chave entre tabelas
+Criacao da view DETALHES_VEICULOS
+Criacao de indices em Veiculo, Movimentacoes, Cores, Marcas, Modelos
