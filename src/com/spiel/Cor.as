@@ -19,7 +19,7 @@ package com.spiel
 		{
 			var r:SQLResult;					
 			var stmt:SQLStatement = new SQLStatement();			
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			
 			var nomeCor:String = "";
 			
@@ -32,7 +32,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraGetNome);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraGetNomeErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nomeCor;
 									
@@ -62,7 +61,7 @@ package com.spiel
 
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoRecuperar;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 			//Alert.show();
@@ -76,7 +75,6 @@ package com.spiel
 				Alert.show("Erro ao tentar levantar nomes de cores de veículos: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			
 			function tratadoraRecuperar(event:SQLEvent):void
 			{
@@ -111,7 +109,7 @@ package com.spiel
 		{
 			var r:SQLResult;					
 			var stmt:SQLStatement = new SQLStatement();			
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 
 			var codCor:String = "";
 			
@@ -123,7 +121,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraGetCodigo);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraGetCodigoErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return codCor;
 									

@@ -265,7 +265,7 @@ public function abrirSugestoes(textInput:TextInput, tabela:String, coluna:String
 	var outputSugestoes:Array = new Array();
 	var r:SQLResult;
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 		
 	stmt.text = "" +
 		"SELECT " + coluna + ((tabela == "MOVIMENTACOES" && coluna == "ID") ? ", PLACA AS P " : " ") +
@@ -278,7 +278,6 @@ public function abrirSugestoes(textInput:TextInput, tabela:String, coluna:String
 	stmt.addEventListener(SQLEvent.RESULT, tratadoraAbrirSugestoes);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraAbrirSugestoesErro);
 	stmt.execute();
-	stmt.sqlConnection.close();
 							
 	if (outputSugestoes.length <= 4)
 	{

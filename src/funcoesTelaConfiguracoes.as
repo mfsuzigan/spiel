@@ -94,9 +94,11 @@ public function tratarSelecaoModelo():void
 	}
 }
 
-public function atualizarTarifa():void
-{
-	inputTarifa.text = Utils.formatarDinheiro(Configuracoes.getTarifa());
+public function atualizarTarifa():void {
+
+	if (inputTarifa != null){
+		inputTarifa.text = Utils.formatarDinheiro(Configuracoes.getTarifa());
+	}
 }
 
 public function validarTarifa():void
@@ -424,7 +426,7 @@ public function confirmarLimparHistorico():void
 public function limparHistorico():void
 {		
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();	
+	stmt.sqlConnection = Conexao.get();	
 	stmt.addEventListener(SQLEvent.RESULT, tratadora);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 	

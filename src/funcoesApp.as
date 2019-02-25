@@ -166,6 +166,36 @@ public function flashIconeImprimindoPequeno():void
 	}
 }
 
+private function obterTemplateComprovante(idMovimentacao:String, timestamp:String, 
+placa:String, marca:String, modelo:String, cor:String,
+valorTarifaPaga:String, tarifaPaga:String):String{
+	var conteudo:String =
+		"{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1046{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}" +
+		"{\\*\\generator Msftedit 5.41.15.1515;}\\viewkind4\\uc1\\pard\\f0\\fs24 ------------------------------------------------------\\par" +
+		"|  \\b Complexo Assistencial Dr. Hansen\\b0\\par" +
+		"|               \\b Estacionamento\\b0\\par" +
+		"|       \\b Comprovante de Entrada\\b0\\par" +
+		"|\\par" +
+		"|                       C\\'f3digo:\\par" +
+		"|\\par" +
+		"|                      \\b\\fs44 " + idMovimentacao + "\\b0\\fs24\\par" +
+		"|\\par" +
+		"|          " + timestamp + "\\par" +
+		"|\\par" +
+		"|          . Placa: \\b " + placa + "\\b0\\par" +
+		"|          . Marca: " + marca + "\\par" +
+		"|          . Modelo: " + modelo + "\\par" +
+		"|          . Cor: " + cor + "\\par" +
+		"|          . Tarifa: R$ " + valorTarifaPaga + " (" + tarifaPaga + ")\\par" +
+		"|\\par" +
+		"|    \\b Obs.: n\\'e3o nos responsabilizamos\\b0\\par" +
+		"|    \\b por bens deixados no ve\\'edculo\\b0\\par" +
+		"------------------------------------------------------\\fs20\\par" +
+		"}";
+		
+		return conteudo;
+}
+
 public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 {
 	var dirApp:String = File.applicationDirectory.nativePath;
@@ -192,14 +222,7 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 	else if  (n>=100)
 		idMovimentacao = n.toString();
 	
-	/*
-	
-	Alert.show(dir):
-	
-	em desenvolvimento: bin-debug
-	em produção: C:\Arquivos de programas\spiel
-	
-	*/
+	var conteudoComprovante = obterTemplateComprovante(idMovimentacao, timestamp_,placa, marca, modelo, cor, valorTarifaPaga, tarifaPaga);
 		
 	var dirBackup:String = dirApp 
 		+ "\\resources\\comprovantes\\" 
@@ -214,9 +237,9 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 		+ ((isCorrecao) ? "_CORRECAO" : "")
 		+ "_.rtf";
 		
-	var dirComprovante:String = dirApp + "\\resources\\comprovantes\\comprovante.rtf";
+	var caminhoComprovante:String = dirApp + "\\resources\\comprovantes\\comprovante.rtf";
 	
-	var comprovante:File = new File(dirComprovante);	
+	var comprovante:File = new File(caminhoComprovante);	
 	var comprovanteStream:FileStream = new FileStream();
 	comprovanteStream.open(comprovante, FileMode.WRITE);
 	
@@ -245,35 +268,12 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 		valorTarifaPaga = Utils.formatarDinheiro(Configuracoes.getTarifa());
 	}
 	
-	var conteudo:String =
-		"{\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1046{\\fonttbl{\\f0\\fswiss\\fcharset0 Arial;}}" +
-		"{\\*\\generator Msftedit 5.41.15.1515;}\\viewkind4\\uc1\\pard\\f0\\fs24 ------------------------------------------------------\\par" +
-		"|  \\b Complexo Assistencial Dr. Hansen\\b0\\par" +
-		"|               \\b Estacionamento\\b0\\par" +
-		"|       \\b Comprovante de Entrada\\b0\\par" +
-		"|\\par" +
-		"|                       C\\'f3digo:\\par" +
-		"|\\par" +
-		"|                      \\b\\fs44 " + idMovimentacao + "\\b0\\fs24\\par" +
-		"|\\par" +
-		"|          " + timestamp_ + "\\par" +
-		"|\\par" +
-		"|          . Placa: \\b " + placa + "\\b0\\par" +
-		"|          . Marca: " + marca + "\\par" +
-		"|          . Modelo: " + modelo + "\\par" +
-		"|          . Cor: " + cor + "\\par" +
-		"|          . Tarifa: R$ " + valorTarifaPaga + " (" + tarifaPaga + ")\\par" +
-		"|\\par" +
-		"|    \\b Obs.: n\\'e3o nos responsabilizamos\\b0\\par" +
-		"|    \\b por bens deixados no ve\\'edculo\\b0\\par" +
-		"------------------------------------------------------\\fs20\\par" +
-		"}";
-					
-	comprovanteStream.writeMultiByte(conteudo, "iso-8859-1");
+	comprovanteStream.writeMultiByte(conteudoComprovante, "iso-8859-1");
 	comprovanteStream.close();
 	
-	backupStream.writeMultiByte(conteudo, "iso-8859-1");
+	backupStream.writeMultiByte(conteudoComprovante, "iso-8859-1");
 	backupStream.close();
+	imprimirComWordpad(caminhoComprovante);
 	
 	flashIconeImprimindo();
 	
@@ -288,8 +288,19 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 	
 	Application.application.telaTransito.povoarTabelaComprovantesImpressos(null);
 	
-	//Application.application.comprovantesImpressos.push(comprovanteImpresso);
-	//Application.application.telaTransito.tabelaComprovantesImpressos.dataProvider = Application.application.comprovantesImpressos.reverse();
+}
+
+private function imprimirComWordpad(caminhoComprovante:String):void {
+	var nativeProcessStartupInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
+    var file:File = File.applicationDirectory.resolvePath("resources\\etc\\wordpad\\wordpad.exe");
+    nativeProcessStartupInfo.executable = file;
+    
+    var processArgs:Vector.<String> = new Vector.<String>();
+    processArgs[0] = "/p";
+    processArgs[1] = caminhoComprovante;
+    nativeProcessStartupInfo.arguments = processArgs;
+    
+    new NativeProcess().start(nativeProcessStartupInfo);
 }
 
 public function reimprimirUltimoComprovante():void
@@ -308,6 +319,7 @@ public function reimprimirUltimoComprovante():void
 	comprovanteStream.open(comprovante, FileMode.APPEND);
 	comprovanteStream.writeMultiByte(".", "iso-8859-1");
 	comprovanteStream.close();
+	imprimirComWordpad(pathComprovanteGeral);
 	
 	flashIconeImprimindo();
 }
@@ -328,6 +340,7 @@ public function imprimirResumoDeRelatorio():void
 	comprovanteStream.open(comprovante, FileMode.WRITE);
 	comprovanteStream.writeMultiByte(resumoDeRelatorio, "iso-8859-1");
 	comprovanteStream.close();
+	imprimirComWordpad(pathComprovanteGeral);
 	
 	flashIconeImprimindo();
 }
@@ -361,6 +374,7 @@ public function reimprimirComprovante(item:Object):void
 		// copiar para o comprovante geral o comprovante a ser impresso:
 		var comprovante:File = new File(pathComprovanteAlvo);	
 		comprovante.copyTo(new File(pathComprovanteGeral), true);
+		imprimirComWordpad(pathComprovanteGeral);
 			
 		flashIconeImprimindo();
 	}

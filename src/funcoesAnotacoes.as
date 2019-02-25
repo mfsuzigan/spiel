@@ -93,7 +93,7 @@ public function povoarTabelaAnotacoes():void
 	var r:SQLResult;
 	
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 	stmt.text = comandoObterDados;
 	stmt.addEventListener(SQLEvent.RESULT, tratadoraObterDados);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterDadosErro);

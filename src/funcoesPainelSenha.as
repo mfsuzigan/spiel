@@ -75,7 +75,7 @@ public function autorizacao(senha:String):Boolean
 	var autorizar:Boolean = false;
 	var r:SQLResult;
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 	
 	stmt.text = "" +
 		"SELECT SENHA " + 
@@ -84,7 +84,6 @@ public function autorizacao(senha:String):Boolean
 	stmt.addEventListener(SQLEvent.RESULT, tratadoraAutorizacao);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraAutorizacaoErro);
 	stmt.execute();
-	stmt.sqlConnection.close();
 	
 	return autorizar;
 					

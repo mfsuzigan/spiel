@@ -37,7 +37,7 @@ package com.spiel
 			var r:SQLResult;
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoRecuperar;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
@@ -83,7 +83,7 @@ package com.spiel
 				"VALUES ('" + this.nome + "', " + this.idMarca  + ");";
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoInserir;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraInserir);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraInserirErro);
@@ -112,7 +112,7 @@ package com.spiel
 				"where ID = " + this.id;
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoInserir;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraInserir);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraInserirErro);
@@ -141,7 +141,7 @@ package com.spiel
 
 			var s:SQLStatement = new SQLStatement();
 			s.text = comandoRecuperar;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 
@@ -154,8 +154,6 @@ package com.spiel
 			{
 				Alert.show("Erro ao tentar levantar nomes de modelos de veículos: " + erro.message);
 			}
-			
-			s.sqlConnection.close();
 			
 			function tratadoraRecuperar(event:SQLEvent):void
 			{
@@ -196,7 +194,7 @@ package com.spiel
 
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoRecuperar;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 
@@ -209,8 +207,6 @@ package com.spiel
 			{
 				Alert.show("Erro ao tentar levantar nomes de modelos de veículos: " + erro.message);
 			}
-			
-			s.sqlConnection.close();
 			
 			function tratadoraRecuperar(event:SQLEvent):void
 			{
@@ -272,11 +268,10 @@ package com.spiel
 				
 			var stmt:SQLStatement = new SQLStatement();
 			stmt.text = comandoFlush;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraFlush);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraFlushErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return sucesso;
 
