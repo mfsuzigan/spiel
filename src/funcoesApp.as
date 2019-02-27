@@ -221,8 +221,6 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 		idMovimentacao = "0" + n.toString();
 	else if  (n>=100)
 		idMovimentacao = n.toString();
-	
-	var conteudoComprovante = obterTemplateComprovante(idMovimentacao, timestamp_,placa, marca, modelo, cor, valorTarifaPaga, tarifaPaga);
 		
 	var dirBackup:String = dirApp 
 		+ "\\resources\\comprovantes\\" 
@@ -268,6 +266,8 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 		valorTarifaPaga = Utils.formatarDinheiro(Configuracoes.getTarifa());
 	}
 	
+	
+	var conteudoComprovante:String = obterTemplateComprovante(idMovimentacao, timestamp_,placa, marca, modelo, cor, valorTarifaPaga, tarifaPaga);
 	comprovanteStream.writeMultiByte(conteudoComprovante, "iso-8859-1");
 	comprovanteStream.close();
 	

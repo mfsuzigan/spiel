@@ -721,8 +721,7 @@ public function atualizarStatusInput():void
 public function mostrarCanvasMensagem(mostrarCanvasEfetuarCobranca:Boolean, mostrarCanvasCreditoDeduzido:Boolean, mostrarCanvasCreditoInsuficiente:Boolean):void
 {
 	canvasEfetuarCobranca.visible = (mostrarCanvasEfetuarCobranca && !mostrarCanvasCreditoDeduzido);
-	labelEfetuarCobranca.text = labelEfetuarCobranca.text.substr(0, labelEfetuarCobranca.text.length - 1);
-	labelEfetuarCobranca.text += Configuracoes.getTarifa();
+	labelEfetuarCobranca.text = "Efetuar cobrança de R$ " + Utils.formatarDinheiro(Configuracoes.getTarifa()); 
 	
 	canvasCreditoDeduzido.visible = mostrarCanvasCreditoDeduzido;
 	labelCreditoDeduzido.text = labelCreditoDeduzido.text.substr(0, labelCreditoDeduzido.text.length - 1);

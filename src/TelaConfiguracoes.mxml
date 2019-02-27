@@ -176,7 +176,7 @@
 				<mx:Label text="Nova tarifa:" fontWeight="bold" fontSize="22" textAlign="left"/>
 				<mx:HBox verticalAlign="middle" horizontalGap="0">
 					<mx:Label text="R$"/>
-					<mx:TextInput textAlign="center" fontSize="36" id="inputTarifa" text="5,00"/>
+					<mx:TextInput textAlign="center" fontSize="36" text="{Utils.formatarDinheiro(Configuracoes.getTarifa())}" id="inputTarifa"/>
 				</mx:HBox>
 			</mx:VBox>
 			<mx:Button click="validarTarifa()" label="Salvar" height="39" fontSize="14" width="211" id="botaoSalvarTarifa" horizontalCenter="0" verticalCenter="-12"/>
