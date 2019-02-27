@@ -59,7 +59,7 @@ public function abrirSugestoes(textInput:TextInput, tabela:String, coluna:String
 	// para os resultados de queries "regulares":
 	var r:SQLResult;	
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 	
 	// para sugestoes de placas de veículos não registrados:
 	
@@ -92,7 +92,7 @@ public function abrirSugestoes(textInput:TextInput, tabela:String, coluna:String
 		"WHERE PLACA LIKE '" + textInput.text + "%' " + 
 		"ORDER BY PLACA;"
 		
-		stmtSugestoes.sqlConnection = new Conexao();
+		stmtSugestoes.sqlConnection = Conexao.get();
 		stmtSugestoes.addEventListener(SQLEvent.RESULT, fInterna);
 		stmtSugestoes.execute();
 		
@@ -103,7 +103,6 @@ public function abrirSugestoes(textInput:TextInput, tabela:String, coluna:String
 	}
 	
 	stmt.execute();
-	stmt.sqlConnection.close();
 							
 	if (outputSugestoes.length <= 4)
 	{

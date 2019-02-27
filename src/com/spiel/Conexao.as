@@ -9,23 +9,34 @@ package com.spiel
 	
 	public class Conexao extends SQLConnection
 	{
-		public function Conexao()
-		{
-			super();
+		private static var conexao:Conexao;
+		
+		public static function get():Conexao{
 			
-			var arquivo:File = File.applicationDirectory.resolvePath("resources\\database\\spiel.db");
-			//Alert.show(arquivo.nativePath);
-			this.addEventListener(SQLEvent.OPEN, tratadoraOpen);
-			this.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);			
-			this.open(arquivo, "update");
+			if (conexao == null){
+				var novaConexao:Conexao = new Conexao();
+				var arquivo:File = File.applicationDirectory.resolvePath("resources\\database\\spiel.db");
+				//Alert.show(arquivo.nativePath);
+				novaConexao.addEventListener(SQLEvent.OPEN, tratadoraOpen);
+				novaConexao.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);	
+				novaConexao.open(arquivo, "update");
+				
+				conexao = novaConexao;
+				
+			}/* else if (!conexao.connected){
+				conexao.open(arquivo, "update");
+			}*/
+			
+			return conexao;
 		}
 		
-		private function tratadoraOpen(event:SQLEvent):void
+		
+		private static function tratadoraOpen(event:SQLEvent):void
 		{
 			//Alert.show("Conexão aberta com sucesso.");
 		}
 		
-		private function tratadoraErro(event:SQLErrorEvent):void
+		private static function tratadoraErro(event:SQLErrorEvent):void
 		{
 			Alert.show("Erro ao abrir conexão: " + event.error.details);
 		}

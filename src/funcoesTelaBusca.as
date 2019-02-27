@@ -65,7 +65,7 @@ public function initBusca():void
 {
 	
 	resetFiltros();
-	escreverLabelNroVeiculos();
+	//escreverLabelNroVeiculos();
 	
 	botaoApagarRegistroBusca.enabled = false;
 	botaoVisualizarDadosBusca.enabled = false;
@@ -287,7 +287,7 @@ public function abrirSugestoesPlacaBusca(textInput:TextInput, tabela:String, col
 	var outputSugestoes:Array = new Array();
 	var r:SQLResult;
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 	
 	
 	stmt.text = '' +
@@ -299,7 +299,6 @@ public function abrirSugestoesPlacaBusca(textInput:TextInput, tabela:String, col
 	stmt.addEventListener(SQLEvent.RESULT, tratadoraAbrirSugestoes);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraAbrirSugestoesErro);
 	stmt.execute();
-	stmt.sqlConnection.close();
 							
 	if (outputSugestoes.length == 1)
 	{
@@ -469,7 +468,7 @@ public function abrirSugestoesMovimentacaoBusca(textInput:TextInput, tabela:Stri
 	var outputSugestoes:Array = new Array();
 	var r:SQLResult;
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 	
 	
 	stmt.text = '' +
@@ -483,7 +482,6 @@ public function abrirSugestoesMovimentacaoBusca(textInput:TextInput, tabela:Stri
 	stmt.addEventListener(SQLEvent.RESULT, tratadoraAbrirSugestoes);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraAbrirSugestoesErro);
 	stmt.execute();
-	stmt.sqlConnection.close();
 							
 	if (outputSugestoes.length == 1)
 	{

@@ -94,9 +94,11 @@ public function tratarSelecaoModelo():void
 	}
 }
 
-public function atualizarTarifa():void
-{
-	inputTarifa.text = Utils.formatarDinheiro(Configuracoes.getTarifa());
+public function atualizarTarifa():void {
+
+	if (inputTarifa != null){
+		inputTarifa.text = Utils.formatarDinheiro(Configuracoes.getTarifa());
+	}
 }
 
 public function validarTarifa():void
@@ -353,7 +355,7 @@ public function agregarDadosDeBD(arquivo:File):void
 		}
 		
 		Application.application.mensagemAguarde.visible = false;
-		Application.application.atualizarEstatisticas();
+		Application.application.atualizarEstatisticas(true);
 		Alert.show("Foram inseridos " + nroVeiculosInseridos + " veículos e " + nroMovimentacoesInseridas + " movimentações.", "Informações agregadas");
 	}
 	
@@ -424,7 +426,7 @@ public function confirmarLimparHistorico():void
 public function limparHistorico():void
 {		
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();	
+	stmt.sqlConnection = Conexao.get();	
 	stmt.addEventListener(SQLEvent.RESULT, tratadora);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 	
@@ -456,7 +458,7 @@ public function limparHistorico():void
 	function tratadora(event:SQLEvent):void
 	{
 		Application.application.mensagemAguarde.visible = false;
-		Application.application.atualizarEstatisticas();
+		Application.application.atualizarEstatisticas(true);
 		
 		var mensagem:String = (nroMovimentacoesApagadas == 1) ? "Foi excluída " : "Foram excluídas ";
 		mensagem += nroMovimentacoesApagadas.toString();

@@ -40,7 +40,7 @@
 				var dataProvider:Array = new Array();
 				
 				stmt.text = comandoRecuperar;
-				stmt.sqlConnection = new Conexao();
+				stmt.sqlConnection = Conexao.get();
 				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 				stmt.execute();
@@ -99,7 +99,7 @@
 				var dataProvider:Array = new Array();
 				
 				stmt.text = comandoRecuperar;
-				stmt.sqlConnection = new Conexao();
+				stmt.sqlConnection = Conexao.get();
 				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 				stmt.execute();

@@ -48,7 +48,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterDados);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterDadosErro);
@@ -98,7 +98,7 @@ package com.spiel
 				");"
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoInserir;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraInserir);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraInserirErro);
@@ -130,7 +130,7 @@ package com.spiel
 				"WHERE T = '" + this.t + "';";
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoFlush;
 			stmt.addEventListener(SQLEvent.RESULT, tratadora);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
@@ -159,7 +159,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoDeletar;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraDeletar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraDeletarErro);
@@ -187,7 +187,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoDeletar;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraDeletar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraDeletarErro);
@@ -257,7 +257,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterDados);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterDadosErro);
@@ -299,7 +299,7 @@ package com.spiel
 							
 			var r:SQLResult;			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterTs;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterTs);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterTsErro);
@@ -310,7 +310,7 @@ package com.spiel
 			for (var j:Number = 0; j < stringsComandosObtidos.length; j++)
 			{
 				var stmtInterno:SQLStatement = new SQLStatement();
-				stmtInterno.sqlConnection = new Conexao();
+				stmtInterno.sqlConnection = Conexao.get();
 				stmtInterno.addEventListener(SQLEvent.RESULT, tratadoraObterIndices);
 				stmtInterno.addEventListener(SQLErrorEvent.ERROR, tratadoraObterIndicesErro);
 				stmtInterno.text = stringsComandosObtidos[j].toString();

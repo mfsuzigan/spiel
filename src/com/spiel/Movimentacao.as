@@ -35,13 +35,14 @@ package com.spiel
 		public static var COD_ENTRADA_NUMBER:Number = 1;
 		public static var COD_SAIDA_NUMBER:Number = 2;
 		
+		
 		public function Movimentacao(construtorPadrao:Boolean, veiculo:Veiculo, codigoMovimentacao:Number, codigoAnterior:Number, cobrancaNaEntrada:Boolean)
 		{
 			super();
 			
 			if (!construtorPadrao)
 			{
-				conexao = new Conexao();
+				conexao = Conexao.get();
 				stmt = new SQLStatement();
 				stmt.sqlConnection = conexao;
 				
@@ -93,7 +94,7 @@ package com.spiel
 				stmt = new SQLStatement();
 				
 			stmt.text = comandoDeduzCredito;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraDeduzCredito);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraDeduzCreditoErro);
 			stmt.execute();
@@ -167,7 +168,7 @@ package com.spiel
 				"AND CREDITO >= " + this.tarifaAssociada + ";";
 				
 			stmt.text = comandoDeduzCredito;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraDeduzCredito);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraDeduzCreditoErro);
 			stmt.execute();
@@ -200,7 +201,7 @@ package com.spiel
 							+	this.codigoMovimentacao				+ ", "	
 							+	this.codigoAnterior					+ ", " 	
 							+	this.tarifaAssociada				+ ", "
-							+	(this.isCreditoDeduzido ? "1" : "0")+ ", "
+							+	(this.isCreditoDeduzido ? "'1'" : "'0'")+ ", "
 							+	this.veiculoAssociado.getIsento()	+
 				");";
 				
@@ -234,7 +235,7 @@ package com.spiel
 
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoVeiculoAssociado;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraVeiculoAssociado);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculoAssociadoErro);
 			
@@ -248,8 +249,6 @@ package com.spiel
 				Alert.show("Erro ao tentar localizar veículo associado a movimentação: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
-			v.fecharConexao();
 			return v;
 			
 			function tratadoraVeiculoAssociado(event:SQLEvent):void
@@ -294,7 +293,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoExisteEntrada;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraExisteEntrada);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraExisteEntradaErro);
 			
@@ -310,7 +309,6 @@ package com.spiel
 				//Alert.show("Erro ao tentar localizar movimentação no banco de dados: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return (r is Object && r.data is Object);
 			
 			function tratadoraExisteEntrada(event:SQLEvent):void
@@ -346,7 +344,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoExisteEntrada;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			
@@ -362,7 +360,6 @@ package com.spiel
 				Alert.show("Erro ao tentar localizar última movimentação do veículo no banco de dados: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return codigoUltimaMovimentacao;
 			
 			function tratadora(event:SQLEvent):void
@@ -394,7 +391,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoExisteEntrada;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			
@@ -410,7 +407,6 @@ package com.spiel
 				Alert.show("Erro ao tentar localizar o identificador da última movimentação do veículo no banco de dados: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return idUltimaMovimentacao;
 			
 			function tratadora(event:SQLEvent):void
@@ -443,7 +439,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoArrecadacao;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 						
@@ -459,7 +455,6 @@ package com.spiel
 				Alert.show("Erro ao calcular a arrecadação em um intervalo de tempo: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return arrecadacao;
 			
 			function tratadora(event:SQLEvent):void
@@ -493,7 +488,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoArrecadacao;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 						
@@ -509,7 +504,6 @@ package com.spiel
 				Alert.show("Erro ao calcular a arrecadação em um intervalo de tempo: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return arrecadacao;
 			
 			function tratadora(event:SQLEvent):void
@@ -540,7 +534,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoCredito;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			
@@ -556,7 +550,6 @@ package com.spiel
 				Alert.show("Erro ao calcular o crédito distribuído em um intervalo de tempo: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return credito;
 			
 			function tratadora(event:SQLEvent):void
@@ -587,7 +580,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoCredito;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			
@@ -603,7 +596,6 @@ package com.spiel
 				Alert.show("Erro ao calcular o crédito distribuído em um intervalo de tempo: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return credito;
 			
 			function tratadora(event:SQLEvent):void
@@ -632,7 +624,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoMaxT;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraMaxT);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraMaxTErro);
 			
@@ -648,7 +640,6 @@ package com.spiel
 				Alert.show("Erro ao tentar localizar o timestamp máximo das movimentações: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return maxT;
 			
 			function tratadoraMaxT(event:SQLEvent):void
@@ -685,7 +676,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoMinT;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraMinT);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraMinTErro);
 			
@@ -701,7 +692,6 @@ package com.spiel
 				//Alert.show("Erro ao tentar localizar o timestamp máximo das movimentações: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return minT;
 			
 			function tratadoraMinT(event:SQLEvent):void
@@ -739,7 +729,7 @@ package com.spiel
 			
 			var stmt:SQLStatement = new SQLStatement();
 			stmt.text = comandoRecuperar;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 			stmt.execute();
@@ -819,7 +809,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -859,7 +849,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -902,7 +892,7 @@ package com.spiel
 			var saida:Array = new Array();
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -946,7 +936,7 @@ package com.spiel
 			var saida:Array = new Array();
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -993,7 +983,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -1052,7 +1042,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -1096,7 +1086,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -1202,7 +1192,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoDesfazer;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraDesfazer);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraDesfazerErro);
 			
@@ -1218,7 +1208,6 @@ package com.spiel
 				Alert.show("Erro ao desfazer ação: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return sucesso;
 			
 			function tratadoraDesfazer(event:SQLEvent):void
@@ -1259,7 +1248,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -1299,7 +1288,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comando;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			
@@ -1315,7 +1304,6 @@ package com.spiel
 				Alert.show("Erro ao tentar localizar o timestamp da primeira entrada para o dia: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return tPrimeiraEntrada;
 			
 			function tratadora(event:SQLEvent):void
@@ -1355,7 +1343,7 @@ package com.spiel
 			
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comando;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadora);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			
@@ -1371,7 +1359,6 @@ package com.spiel
 				Alert.show("Erro ao tentar localizar o timestamp da última saída para o dia: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			return tUltimaSaida;
 			
 			function tratadora(event:SQLEvent):void
@@ -1408,7 +1395,7 @@ package com.spiel
 			
 			var stmt:SQLStatement = new SQLStatement();
 			stmt.text = comandoRecuperar;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 			
@@ -1577,7 +1564,7 @@ package com.spiel
 				stmt = new SQLStatement();
 				
 			stmt.text = comandoDeduzCredito;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraDeduzCredito);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraDeduzCreditoErro);
 			stmt.execute();
@@ -1653,7 +1640,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);
@@ -1690,7 +1677,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadora);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
@@ -1745,7 +1732,7 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosErro);

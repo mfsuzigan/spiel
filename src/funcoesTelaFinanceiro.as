@@ -9,9 +9,11 @@ import flash.data.SQLStatement;
 import flash.events.SQLErrorEvent;
 import flash.events.SQLEvent;
 
+import mx.charts.LineChart;
 import mx.controls.Alert;
+import mx.controls.DateChooser;
+import mx.controls.Label;
 import mx.core.Application;
-import mx.managers.CursorManager;
 
 public function initFinanceiro():void
 {
@@ -124,6 +126,14 @@ public function atualizarNumeros():void
 public function initGrafico():void
 {
 	
+	if (dataInicioG == null){
+		dataInicioG = new DateChooser();
+	}
+	
+	if (dataTerminoG == null){
+		dataTerminoG = new DateChooser();
+	}
+	
 	dataInicioG.showToday =
 	dataTerminoG.showToday = true;
 	
@@ -141,6 +151,14 @@ public function initGrafico():void
 
 public function povoarGrafico():void
 {
+	if (labelInicioPainelG == null){
+		labelInicioPainelG = new Label();
+	}
+	
+	if (labelTerminoPainelG == null){
+		labelTerminoPainelG = new Label();
+	}
+	
 	// Atualizando as labels dos controles de calendário:
 	labelInicioPainelG.text = Utils.dataFormatadaSemHorario(Utils.getStringInstante(dataInicioG.selectedDate));
 	labelTerminoPainelG.text = Utils.dataFormatadaSemHorario(Utils.getStringInstante(dataTerminoG.selectedDate));
@@ -157,7 +175,7 @@ public function povoarGrafico():void
 	
 	var s:SQLStatement = new SQLStatement();	
 	s.text = comandoArrecadacao;
-	s.sqlConnection = new Conexao();
+	s.sqlConnection = Conexao.get();
 	s.addEventListener(SQLEvent.RESULT, tratadora);
 	s.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 				
@@ -173,7 +191,10 @@ public function povoarGrafico():void
 		Alert.show("Erro ao calcular a arrecadação em um intervalo de tempo: " + erro.message);
 	}
 	
-	s.sqlConnection.close();
+	if (grafico == null){
+		grafico = new LineChart();	
+	}
+	
 	grafico.dataProvider = dataProvider;
 	
 	function tratadora(event:SQLEvent):void

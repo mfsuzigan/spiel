@@ -21,7 +21,7 @@ package com.spiel
 			var r:SQLResult;
 			var stmt:SQLStatement = new SQLStatement();
 				
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = "" +
 				"SELECT * " + 
 				"FROM SUGESTOES " +
@@ -30,7 +30,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraExistePlaca);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraExistePlacaErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			this.nomeCor = nomeCor;
 			this.nomeModelo = nomeModelo;
@@ -66,7 +65,7 @@ package com.spiel
 			var stmt:SQLStatement = new SQLStatement();
 			var out:Boolean = false;
 				
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = "" +
 				"SELECT PLACA " + 
 				"FROM SUGESTOES " +
@@ -75,7 +74,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraExistePlaca);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraExistePlacaErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return out;
 			
@@ -97,7 +95,7 @@ package com.spiel
 		public static function limparDaListaDeSugestoes(placa:String):void
 		{
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			
 			var comandoLimpar:String =
 				"DELETE " + 

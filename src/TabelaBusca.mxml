@@ -18,13 +18,171 @@
 			import flash.utils.Timer;
 			import mx.controls.Alert;
 			
-			
 			public function povoar	(	placa:String, marca:String, modelo:String, nomeCor:String,
 										status:String, codMovimentacao:String, dataRegistro:Date,
 										dataUltMovimentacao:Date, tipoCredito:String, qteCredito:Number,
 										tipoIsento:String
 									):void
-			{
+			{					
+				var comandoRecuperar:String =
+					"SELECT * FROM DETALHES_VEICULOS WHERE 0 = 0 ";
+					
+				if (placa != "")
+				{
+					comandoRecuperar += "AND PLACA = '" + placa + "' ";
+				}
+				
+				if (marca != "Todas as marcas")
+				{
+					comandoRecuperar += "AND MARCA = '" + marca + "' ";
+				}
+				
+				if (modelo != "Todos os modelos")
+				{
+					comandoRecuperar += "AND MODELO = '" + modelo + "' ";
+				}
+				
+				if (nomeCor != "Todas as cores")
+				{
+					comandoRecuperar += "AND COR = '" + nomeCor + "' ";
+				}
+				
+				switch (status)
+				{
+					case "No pátio":
+					
+						comandoRecuperar += "AND CODMOV = 1 ";
+						break;
+					
+					case "Fora do pátio":
+					
+						comandoRecuperar += "AND CODMOV = 2 ";
+						break;
+				}
+				
+				if (codMovimentacao != "" && status != "Fora do pátio")
+				{
+					comandoRecuperar += "AND IDMOV = " + codMovimentacao + " ";
+				}
+				
+				if (dataRegistro != null)
+				{
+					comandoRecuperar += "PLACA IN " + 
+							"(	SELECT PLACA " +
+							"	FROM MOVIMENTACOES " +
+							"	WHERE CODIGO = 0 " +
+							"	AND T LIKE '" + Utils.getStringDiaSemHorario(dataRegistro) + "%'" + 
+							") ";
+				}
+				
+				if (dataUltMovimentacao != null)
+				{
+					comandoRecuperar += "AND PLACA IN " + 
+							"(	SELECT PLACA AS PL" +
+							"	FROM MOVIMENTACOES " +
+							"	WHERE T = " + 
+							"	(	SELECT MAX(T) " + 
+							"		FROM MOVIMENTACOES " + 
+							"		WHERE PLACA = PL" + 
+							"	) " + 
+							"	AND T LIKE '" + Utils.getStringDiaSemHorario(dataUltMovimentacao) + "%'" + 
+							") ";
+				}
+				
+				if (tipoCredito != "Créd.: indiferente")
+				{
+					comandoRecuperar += " AND CREDITO ";
+					
+					if (tipoCredito == "Créd.: maior que")
+					
+						comandoRecuperar += "> ";
+						
+					else if (tipoCredito == "Créd.: igual a")
+					
+						comandoRecuperar += "= ";
+						
+					else 
+					
+						comandoRecuperar += "< ";
+						
+					comandoRecuperar  += qteCredito.toString() + " ";
+						
+				}
+				
+				if (tipoIsento != "Isentos e não isentos")
+				{
+					comandoRecuperar += "AND ISENTO = ";
+					
+					if (tipoIsento == "Isentos")
+					
+						comandoRecuperar += "1 ";
+						
+					else
+						
+						comandoRecuperar += "0 ";	
+				}
+				
+				comandoRecuperar += " ORDER BY TMOV DESC;";
+			
+				var stmt:SQLStatement = new SQLStatement();
+				var r:SQLResult;
+				var dataProvider:Array = new Array();
+				
+				stmt.text = comandoRecuperar;
+				stmt.sqlConnection = Conexao.get();
+				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+				stmt.execute(200);				
+				
+				this.styleFunction = funcaoEstilo;
+				this.dataProvider = dataProvider;
+					
+				//timerPatio.start();
+					
+				function tratadoraRecuperar(event:SQLEvent):void
+				{
+					r = stmt.getResult();
+						
+					try
+					{	
+						if (r.data is Object)
+						{
+							
+							for (var i:Number = 0; i < r.data.length; i++)
+							{
+								var tupla:Object = new Object();
+								
+								tupla.placa = r.data[i].PLACA.toString();
+								tupla.marca = r.data[i].MARCA.toString();								
+								tupla.modelo = r.data[i].MODELO.toString();								
+								tupla.cor = r.data[i].COR.toString();								
+								tupla.status = (r.data[i].CODMOV.toString() == "1") ? "No pátio" : "Fora do pátio";
+								tupla.idMovimentacao = (r.data[i].CODMOV.toString() == "1") ? (r.data[i].IDMOV.toString()) : "-" ;
+																
+								dataProvider.push(tupla);
+							}
+						}
+					}
+					
+					catch (erro:Error)
+					{
+						Alert.show("Erro ao tentar recuperar veículo no pátio: " + erro.getStackTrace());
+					}
+				}
+				
+				function tratadoraRecuperarErro(event:SQLErrorEvent):void
+				{
+					Alert.show("Erro ao tentar recuperar veículo no pátio: " + event.error.details);
+				}
+			}
+			
+			
+			public function povoarOld	(	placa:String, marca:String, modelo:String, nomeCor:String,
+										status:String, codMovimentacao:String, dataRegistro:Date,
+										dataUltMovimentacao:Date, tipoCredito:String, qteCredito:Number,
+										tipoIsento:String
+									):void
+			{/*
 				var comandoRecuperar:String =
 					"SELECT " + 
 						"VEICULOS.PLACA AS P, " + 
@@ -39,6 +197,27 @@
 					"AND VEICULOS.ID_COR = CORES.ID " + 
 					"AND MODELOS.ID_MARCA = MARCAS.ID " + 
 					"AND MOVIMENTACOES.T = " + 
+						"(	SELECT MAX(T)" + 
+						"	FROM MOVIMENTACOES" + 
+						"	WHERE PLACA = P" + 
+						") "
+					;*/
+					
+						var comandoRecuperar:String =
+					"SELECT " + 
+						"VEICULOS.PLACA AS P, " + 
+						"MARCAS.NOME AS MARCA, " + 
+						"MODELOS.NOME AS MODELO, " + 
+						"CORES.NOME AS COR, " + 
+						"MOVIMENTACOES.CODIGO AS CODMOV, " + 
+						"MOVIMENTACOES.ID AS IDMOV " + 
+					"FROM VEICULOS " + 
+					"INNER JOIN MOVIMENTACOES ON MOVIMENTACOES.ID_VEICULO = VEICULOS.ID " +
+					"INNER JOIN MODELOS ON MODELOS.ID = VEICULOS.ID_MODELO " +
+					"INNER JOIN MARCAS ON MARCAS.ID = MODELOS.ID_MARCA " +
+					"INNER JOIN CORES ON CORES.ID = VEICULOS.ID_COR " +
+		
+					"WHERE MOVIMENTACOES.T = " + 
 						"(	SELECT MAX(T)" + 
 						"	FROM MOVIMENTACOES" + 
 						"	WHERE PLACA = P" + 
@@ -148,7 +327,7 @@
 				var dataProvider:Array = new Array();
 				
 				stmt.text = comandoRecuperar;
-				stmt.sqlConnection = new Conexao();
+				stmt.sqlConnection = Conexao.get();
 				stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 				stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 				stmt.execute();				

@@ -9,6 +9,7 @@ package com.spiel
 	
 	public class Veiculo
 	{
+		private var id:Number;
 		private var placa:String;
 		
 		private var idModelo:String;
@@ -32,9 +33,19 @@ package com.spiel
 		{
 			super();
 			
-			conexao = new Conexao();
+			conexao = Conexao.get();
 			stmt = new SQLStatement();
 			stmt.sqlConnection = conexao;
+		}
+		
+		public function getId():Number 
+		{
+			return this.id;	
+		}
+		
+		public function setId(id:Number):void
+		{
+			this.id = id;
 		}
 		
 		// Setter e getter para placa
@@ -59,7 +70,7 @@ package com.spiel
 			var nomeMarcaObtido:String;							
 			var stmt:SQLStatement = new SQLStatement();
 			
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			
 			stmt.text = "" +
 				"SELECT MODELOS.NOME AS NMOD, MARCAS.NOME AS NMARC " + 
@@ -70,7 +81,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraSetIdModelo);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraSetIdModeloErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			this.nomeModelo = nomeModeloObtido;
 			this.nomeMarca = nomeMarcaObtido;
 						
@@ -116,7 +126,7 @@ package com.spiel
 			var nomeCorObtido:String;
 			var stmt:SQLStatement = new SQLStatement();
 				
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = "" +
 				"SELECT NOME " + 
 				"FROM CORES " +
@@ -125,7 +135,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraSetIdCor);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraSetIdCorErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			this.nomeCor = nomeCorObtido;
 			
@@ -218,12 +227,11 @@ package com.spiel
 				"INTO HISTORICO_CREDITOS (T, PLACA, CREDITO, CREDITO_0, VEICULO_ISENTO) " +
 				"VALUES ('" + Utils.getStringAgora(true) + "', '" + this.placa + "', " + this.credito + ", " + this.credito0 + ", " + this.getIsento() + ");";
 								
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoInserir;
 			//stmt.addEventListener(SQLEvent.COMMIT, tratadoraInserir);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraInserirErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			function tratadoraInserir(event:SQLEvent):void
 			{
@@ -243,12 +251,11 @@ package com.spiel
 				"FROM HISTORICO_CREDITOS " +
 				"WHERE PLACA = '" + this.placa + "';";
 				
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoRemover;
 			//stmt.addEventListener(SQLEvent.COMMIT, tratadoraInserir);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRemoverErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			function tratadoraRemover(event:SQLEvent):void
 			{
@@ -281,16 +288,13 @@ package com.spiel
 				"WHERE PLACA = '" + this.placa + "';";
 				
 			stmt.text = comandoFlush;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraFlush);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraFlushErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			this.placa = novaPlaca;
 			this.atualizarHistoricoDeCreditos();
-
-			stmt.sqlConnection.close();
 
 			function tratadoraFlush(event:SQLEvent):void
 			{
@@ -310,11 +314,10 @@ package com.spiel
 				"WHERE PLACA = '" + this.placa + "';";
 				
 			stmt.text = comandoFlush;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraFlush);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraFlushErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 
 			function tratadoraFlush(event:SQLEvent):void
 			{
@@ -335,11 +338,10 @@ package com.spiel
 				"WHERE PLACA = '" + this.placa + "';";
 				
 			stmt.text = comandoFlush;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraFlush);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraFlushErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 
 			function tratadoraFlush(event:SQLEvent):void
 			{
@@ -369,17 +371,17 @@ package com.spiel
 			var idCorObtido:String;
 			var isentoObtido:String
 			var creditoObtido:String;
+			var idObtido:Number;
 			var creditoAnterior:String;
 			
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterDados);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterDadosErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			if (r is Object && r.data is Object)
 			{
@@ -388,6 +390,7 @@ package com.spiel
 				this.setIdCor(idCorObtido);
 				this.setIsento(isentoObtido);
 				this.setCredito(creditoObtido);
+				this.setId(idObtido);
 			}
 									
 			return (r is Object && r.data is Object);
@@ -402,6 +405,7 @@ package com.spiel
 					idCorObtido = r.data[0].ID_COR;
 					isentoObtido = r.data[0].ISENTO;
 					creditoObtido = r.data[0].CREDITO;
+					idObtido = Number(r.data[0].ID);
 				}
 			}
 			
@@ -425,12 +429,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterDados);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterDadosErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 																				
 			return jaEntrouHoje;
 									
@@ -453,11 +456,6 @@ package com.spiel
 		
 		// Fecha a conexão (variável de instância).
 			
-		public function fecharConexao():void
-		{
-			this.conexao.close();
-		}
-		
 		public function isCreditoInsuficiente():Boolean
 		{
 			return (Number(this.credito) < Number(Configuracoes.getTarifa()) && Number(this.credito) > 0);
@@ -474,11 +472,10 @@ package com.spiel
 				"WHERE PLACA = '" + this.placa + "'; ";
 				
 			stmt.text = comandoRemover;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRemover);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRemoverErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 
 			function tratadoraRemover(event:SQLEvent):void
 			{
@@ -498,11 +495,10 @@ package com.spiel
 				"WHERE PLACA = '" + this.placa + "'; ";
 				
 			stmt.text = comandoRemover;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRemover);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRemoverErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 
 			function tratadoraRemover(event:SQLEvent):void
 			{
@@ -522,11 +518,10 @@ package com.spiel
 				"WHERE PLACA = '" + this.placa + "'; ";
 				
 			stmt.text = comandoRemover;
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRemover);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRemoverErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 
 			function tratadoraRemover(event:SQLEvent):void
 			{
@@ -550,7 +545,7 @@ package com.spiel
 			var nomeMarcaObtido:String = "";
 			var stmt:SQLStatement = new SQLStatement();
 			
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			
 			stmt.text = "" +
 				"SELECT MARCAS.NOME " + 
@@ -561,7 +556,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraGetNomeMarca);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraGetNomeMarcaErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nomeMarcaObtido;
 			
@@ -587,7 +581,7 @@ package com.spiel
 			var stmt:SQLStatement = new SQLStatement();
 			var out:Boolean = false;
 				
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = "" +
 				"SELECT PLACA " + 
 				"FROM VEICULOS " +
@@ -596,7 +590,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraExistePlaca);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraExistePlacaErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return out;
 			
@@ -621,7 +614,7 @@ package com.spiel
 			var stmt:SQLStatement = new SQLStatement();
 			var placas:Array = new Array();
 				
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = "" +
 				"SELECT PLACA " + 
 				"FROM VEICULOS ;";
@@ -629,7 +622,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadora);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return placas;
 			
@@ -658,7 +650,7 @@ package com.spiel
 			var idModeloObtido:String = "";
 			var stmt:SQLStatement = new SQLStatement();
 			
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			
 			stmt.text = "" +
 				"SELECT ID " + 
@@ -668,7 +660,6 @@ package com.spiel
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraGetIdModelo);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraGetIdModeloErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return idModeloObtido;
 			
@@ -700,12 +691,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraNoPatio);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraNoPatioErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroVeiculosNoPatio;
 									
@@ -738,12 +728,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraNoPatio);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraNoPatioErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroVeiculosNoPatio;
 									
@@ -787,12 +776,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraNoPatio);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraNoPatioErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroVeiculosNoPatio;
 									
@@ -821,12 +809,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraNroVeiculos);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraNroVeiculosErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroVeiculos;
 									
@@ -862,12 +849,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraBaixasHoje);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraBaixasHojeErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroBaixasHoje;
 									
@@ -903,12 +889,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraBaixas);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraBaixasErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroBaixas;
 									
@@ -943,12 +928,11 @@ package com.spiel
 			var r:SQLResult;
 			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterDados;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraVeiculosHoje);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraVeiculosHojeErro);
 			stmt.execute();
-			stmt.sqlConnection.close();
 			
 			return nroVeiculosHoje;
 									

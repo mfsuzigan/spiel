@@ -1,4 +1,21 @@
+-Gargalos
+Buscar veículo (inclusive ao fechar janelas da tela)
+Pátio
+
+-Bugs
+Configurações->Tarifa (intermitente)
+Excluir veículo -> Confirma
+
+-Features
 Deleção de veículo individual pela placa
-Deleção de veículos em massa por data
-Melhorar a execução do auxiliar de impressão
-Gastos auxiliares
+Deleção de veículos em massa por data de registro
+Eliminar o auxiliar de impressão
+Permitir outros gastos em relatórios
+
+-Probl. internos
+Chave primária
+
+Ações:
+Uso da placa como chave entre tabelas
+Criacao da view DETALHES_VEICULOS
+Criacao de indices em Veiculo, Movimentacoes, Cores, Marcas, Modelos

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas show="initConfiguracoes()" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*" borderThickness="90">
+<mx:Canvas show="initConfiguracoes()" xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:ns1="*">
 	<mx:Script>
 		<![CDATA[
 			import com.spiel.Utils;
@@ -171,16 +171,16 @@
 			<mx:Text text="Todos os dados financeiros serão perdidos. &#xa;O cadastro de veículos não será afetado." fontWeight="bold" fontSize="18" textAlign="center" horizontalCenter="0" width="448" height="55" top="116.8" color="#FF0000"/>
 			<mx:Button click="apagarMovimentacoesPorMes(tabelaMovimentacoesPorMes.selectedItem)" enabled="false" label="Apagar movimentações" fontSize="14" top="424" icon="@Embed(source='../resources/icones/delete.png')" horizontalCenter="0" id="botaoApagarMovimentacoes"/>
 		</mx:Canvas>-->
-		<mx:Canvas initialize="atualizarTarifa()" show="atualizarTarifa()" label="Tarifa" width="100%" height="100%">
+		<mx:Canvas show="atualizarTarifa()" label="Tarifa" width="100%" height="100%">
 			<mx:VBox horizontalAlign="center" horizontalCenter="0" verticalCenter="-98" verticalGap="16">
 				<mx:Label text="Nova tarifa:" fontWeight="bold" fontSize="22" textAlign="left"/>
 				<mx:HBox verticalAlign="middle" horizontalGap="0">
 					<mx:Label text="R$"/>
-					<mx:TextInput textAlign="center" fontSize="36" id="inputTarifa" text="5,00"/>
+					<mx:TextInput textAlign="center" fontSize="36" text="{Utils.formatarDinheiro(Configuracoes.getTarifa())}" id="inputTarifa"/>
 				</mx:HBox>
 			</mx:VBox>
 			<mx:Button click="validarTarifa()" label="Salvar" height="39" fontSize="14" width="211" id="botaoSalvarTarifa" horizontalCenter="0" verticalCenter="-12"/>
-			<mx:Accordion id="accordionReimprimir" height="320" width="100%" left="0" bottom="0" visible="false" showEffect="wipeUp" hideEffect="wipeDown" headerStyleName="headerAccordion">
+			<mx:Accordion id="accordionReimprimir" height="320" width="100%" left="0" bottom="0" visible="false" headerStyleName="headerAccordion">
 			    <mx:Canvas label="Reimprimir comprovantes" width="100%" height="100%">
 			        <mx:DataGrid x="10" y="10" width="316" dataProvider="{Application.application.comprovantesImpressos}">
 			            <mx:columns>

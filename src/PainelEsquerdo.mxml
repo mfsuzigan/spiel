@@ -24,7 +24,7 @@
 	</mx:VBox>
 	<ns1:LogoSpiel horizontalCenter="0" top="10">
 	</ns1:LogoSpiel>
-	<mx:Panel width="92%" height="133" layout="absolute" id="painelDeControle" title="Ir para..." horizontalCenter="0" borderColor="#FFDC73" alpha="1.0" top="280" borderAlpha="100">
+	<mx:Panel height="133" layout="absolute" id="painelDeControle" title="Ir para..." horizontalCenter="0" borderColor="#FFDC73" alpha="1.0" top="280" borderAlpha="100">
 		<mx:VBox horizontalAlign="center" horizontalCenter="0" verticalCenter="0">
 			<mx:Script>
 			<![CDATA[
@@ -75,7 +75,7 @@
 			]]>
 		</mx:Script>
 			<mx:Label fontWeight="bold" id="labelPainelDeControle"/>
-			<mx:HBox>
+			<mx:HBox horizontalAlign="center">
 				<mx:Button click="mostrarTela(TELA_TRANSITO)" id="botaoGerenciarTransito" icon="@Embed(source='../resources/icones/car.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
 				<mx:Button click="mostrarTela(TELA_BUSCA)" id="botaoPesquisarVeiculos" icon="@Embed(source='../resources/icones/magnifier.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>
 				<mx:Button click="mostrarTela(TELA_PATIO)" id="botaoVeiculosNoPatio" icon="@Embed(source='../resources/icones/shield.png')" mouseOver="mudaLabelPainelDeControle(event)" mouseOut="resetLabelPainelDeControle()"/>

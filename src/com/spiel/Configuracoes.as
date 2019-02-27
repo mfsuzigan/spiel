@@ -24,7 +24,7 @@ package com.spiel
 			
 			var r:SQLResult;			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterTarifa;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterTarifa);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterTarifaErro);
@@ -59,7 +59,7 @@ package com.spiel
 			
 			var r:SQLResult;			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterTarifa;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterTarifa);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterTarifaErro);
@@ -98,7 +98,7 @@ package com.spiel
 			
 			var r:SQLResult;			
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoObterTarifa;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraObterTarifa);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraObterTarifaErro);

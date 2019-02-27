@@ -6,3 +6,4 @@ target
 *.iml
 *.factorypath
 *.p12
+bin-debug/resources/comprovantes

@@ -83,7 +83,7 @@ public function abrirSugestoesComprovante(textInput:TextInput, tabela:String, co
 	var outputSugestoes:Array = new Array();
 	var r:SQLResult;
 	var stmt:SQLStatement = new SQLStatement();
-	stmt.sqlConnection = new Conexao();
+	stmt.sqlConnection = Conexao.get();
 	
 	
 	stmt.text = "" +
@@ -95,7 +95,6 @@ public function abrirSugestoesComprovante(textInput:TextInput, tabela:String, co
 	stmt.addEventListener(SQLEvent.RESULT, tratadoraAbrirSugestoes);
 	stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraAbrirSugestoesErro);
 	stmt.execute();
-	stmt.sqlConnection.close();
 							
 	if (outputSugestoes.length == 1)
 	{

@@ -42,7 +42,7 @@ package com.spiel
 				"WHERE NOME = '" + nome + "';";
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoRecuperar;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
@@ -83,7 +83,7 @@ package com.spiel
 				"WHERE ID = '" + id + "';";
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoRecuperar;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
@@ -123,7 +123,7 @@ package com.spiel
 				"VALUES ('" + this.nome + "');";
 				
 			var stmt:SQLStatement = new SQLStatement();
-			stmt.sqlConnection = new Conexao();
+			stmt.sqlConnection = Conexao.get();
 			stmt.text = comandoInserir;
 			stmt.addEventListener(SQLEvent.RESULT, tratadoraInserir);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraInserirErro);
@@ -152,7 +152,7 @@ package com.spiel
 
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoRecuperar;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 			
@@ -166,8 +166,6 @@ package com.spiel
 			{
 				Alert.show("Erro ao tentar levantar nomes de marcas de veículos: " + erro.message);
 			}
-			
-			s.sqlConnection.close();
 			
 			function tratadoraRecuperar(event:SQLEvent):void
 			{
@@ -209,7 +207,7 @@ package com.spiel
 
 			var s:SQLStatement = new SQLStatement();	
 			s.text = comandoRecuperar;
-			s.sqlConnection = new Conexao();
+			s.sqlConnection = Conexao.get();
 			s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
 			s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
 
@@ -223,7 +221,6 @@ package com.spiel
 				Alert.show("Erro ao tentar levantar modelos de marca de veículo: " + erro.message);
 			}
 			
-			s.sqlConnection.close();
 			
 			function tratadoraRecuperar(event:SQLEvent):void
 			{
