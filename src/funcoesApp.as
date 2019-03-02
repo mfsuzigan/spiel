@@ -292,7 +292,7 @@ public function imprimirComprovante(mov:Movimentacao, isCorrecao:Boolean):void
 
 private function imprimirComWordpad(caminhoComprovante:String):void {
 	var nativeProcessStartupInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
-    var file:File = File.applicationDirectory.resolvePath("resources\\etc\\wordpad\\wordpad.exe");
+    var file:File = File.applicationDirectory.resolvePath("etc\\wordpad\\wordpad.exe");
     nativeProcessStartupInfo.executable = file;
     
     var processArgs:Vector.<String> = new Vector.<String>();

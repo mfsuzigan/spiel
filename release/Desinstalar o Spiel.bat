@@ -1,7 +1,8 @@
-rmdir /S /Q "C:\Arquivos de programas\spiel\"
-rmdir /S /Q "D:\Arquivos de programas\spiel\"
+title "Desinstalar o Spiel"
+wmic product where name="spiel" call uninstall /nointeractive
+rmdir /S /Q "%PROGRAMFILES(X86)%\spiel"
+rmdir /S /Q "%PROGRAMFILES%\spiel"
 echo off
 cls
-title "Desinstalar o Spiel"
 echo O Spiel foi desinstalado com sucesso.
 pause
