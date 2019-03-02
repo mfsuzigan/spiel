@@ -1,0 +1,12 @@
+Informações para criação de release do Spiel
+
+1. criar diretório "bin-release" na raiz do projeto com o conteúdo:
+-etc
+-resources
+
+2. criar certificado e empacotar via IDE o projeto como spiel.air
+
+3. executar na raiz do projeto para criação do .exe com privilégios de extended Desktop:
+adt -package -target native spiel.exe spiel.air
+
+4. colocar o .exe gerado na pasta release\etc. A pasta release representa o que deve ser transportado como conjunto de instalação
