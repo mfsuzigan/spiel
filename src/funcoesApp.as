@@ -176,9 +176,7 @@ valorTarifaPaga:String, tarifaPaga:String):String{
 		"|               \\b Estacionamento\\b0\\par" +
 		"|       \\b Comprovante de Entrada\\b0\\par" +
 		"|\\par" +
-		"|                       C\\'f3digo:\\par" +
-		"|\\par" +
-		"|                      \\b\\fs44 " + idMovimentacao + "\\b0\\fs24\\par" +
+		"|          C\\'f3d.:\\b\\fs44 " + idMovimentacao + "\\b0\\fs24\\par" +
 		"|\\par" +
 		"|          " + timestamp + "\\par" +
 		"|\\par" +
