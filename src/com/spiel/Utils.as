@@ -256,6 +256,10 @@ package com.spiel
 			
 			return timestamp;
 		}
+		
+		public static function stringIsBlank(str:String):Boolean{
+			return str == null || str == "";
+		}
 	
 		public static function validarInput(alvo:Object):Boolean
 		{
@@ -298,6 +302,17 @@ package com.spiel
 			}
 			
 			return quantiaFormatada;	
+		}
+		
+		public static function obterValorNumerico(str:String):Number {
+			
+			var valorNumerico:String = "0";
+			
+			if (!stringIsBlank(str)){
+				valorNumerico = str.replace(",", ".");
+			}
+			
+			return Number(valorNumerico);
 		}
 	
 		public static function getDate(timestamp:String):Date

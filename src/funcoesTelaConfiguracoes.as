@@ -2,6 +2,7 @@
 import com.spiel.Conexao;
 import com.spiel.ConexaoComBD;
 import com.spiel.Configuracoes;
+import com.spiel.DespesaFixa;
 import com.spiel.Marca;
 import com.spiel.Modelo;
 import com.spiel.Movimentacao;
@@ -20,6 +21,7 @@ import mx.controls.Alert;
 import mx.controls.RadioButton;
 import mx.core.Application;
 import mx.events.CloseEvent;
+
 
 public function initConfiguracoes():void
 {
@@ -46,11 +48,40 @@ public function initConfiguracoes():void
 	
 	comboboxEditarModelo.dataProvider = Modelo.getNomesModelos().sort(Array.CASEINSENSITIVE);
 	
-	
 	if (accordionConfiguracoes.selectedIndex == 4 && inputTarifa is Object)	
 		inputTarifa.text = Utils.formatarDinheiro(Configuracoes.getTarifa());
-	
 }
+
+//public function atualizarDespesas():void{
+//	
+//	tabelaDespesas.dataProvider = getDespesas();
+//}
+
+			
+public function adicionarDespesa():void {
+	var despesaTemValidade:Boolean = DespesaFixa.nomeTemValidade(inputNomeDespesa.text) && 
+	DespesaFixa.valorTemValidade(inputValorDespesa.text) &&
+	Utils.validarInput(inputNomeDespesa) &&
+	Utils.validarInputNumerico(inputValorDespesa);
+	
+	if (despesaTemValidade){
+		var novaDespesa:DespesaFixa = new DespesaFixa();
+		novaDespesa.nome = inputNomeDespesa.text;
+		novaDespesa.valor = Utils.obterValorNumerico(inputValorDespesa.text);
+		
+		if (novaDespesa.inserir()){
+			(ArrayCollection)(tabelaDespesas.dataProvider).addItem(novaDespesa);
+			limparCamposDespesa();
+			Alert.show("Despesa adicionada com sucesso", "Despesa adicionada");
+		}
+	}
+}
+
+public function limparCamposDespesa():void{
+	inputNomeDespesa.text = "";
+	inputValorDespesa.text = "";
+}
+
 /*
 public function apagarMovimentacoesPorMes(item:Object):void
 {
@@ -421,6 +452,54 @@ public function confirmarLimparHistorico():void
 			limparHistorico();
 		}			
 	}	
+}
+
+public static function obterDespesas():Array	{
+		var despesas:Array = new Array();
+								
+		var comandoRecuperar:String = "" +
+			"SELECT * " +
+			"FROM DESPESAS_FIXAS ORDER BY NOME;";
+	
+		var s:SQLStatement = new SQLStatement();	
+		s.text = comandoRecuperar;
+		s.sqlConnection = Conexao.get();
+		s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+		s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+		
+		try {
+			s.execute();
+		}
+		
+		catch (erro:Error) {
+			Alert.show("Erro ao recuperar despesas: " + erro.message);
+		}
+		
+		function tratadoraRecuperar(event:SQLEvent):void {
+			var r:SQLResult = s.getResult();
+			
+			try	{	
+				if (r is Object && r.data is Object) {
+					for (var i:Number = 0; i < r.data.length; i++){
+						var despesa:DespesaFixa = new DespesaFixa();
+						despesa.setId(r.data[i].ID.toString());
+						despesa.setNome(r.data[i].NOME.toString());
+						despesa.setValor(Number(r.data[i].VALOR.toString()));
+						despesas.push(despesa);
+					}
+				}					
+			}
+			
+			catch (erro:Error) {
+				Alert.show("Erro ao recuperar despesas: " + erro.getStackTrace());
+			}
+		}
+		
+		function tratadoraRecuperarErro(event:SQLErrorEvent):void {
+			Alert.show("Erro ao recuperar despesas: " + event.error.details);	
+		}
+	
+		return despesas;
 }
 
 public function limparHistorico():void

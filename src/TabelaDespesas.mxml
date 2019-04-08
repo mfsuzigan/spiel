@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AdvancedDataGrid xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.TextInput;
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import com.spiel.DespesaFixa;
+			import mx.controls.Alert;
+
+			public function removerDespesa(nomeDespesaARemover:String):void {
+				var dProvider:ArrayCollection = (ArrayCollection)(dataProvider);
+				var despesa:DespesaFixa;
+				
+				for (var i:Number = 0; i < dProvider.length; i++){
+					despesa = (DespesaFixa)(dProvider.getItemAt(i));
+					
+					if (despesa.getNome() == nomeDespesaARemover && despesa.remover()){
+							dProvider.removeItemAt(i);
+							Alert.show("Despesa removida com sucesso", "Despesa removida");							
+					}
+				}
+			}
+			
+			public function atualizarDespesa(textInput:TextInput, data:Object, event:Event):void {
+				var despesa:DespesaFixa = (DespesaFixa)(data);
+				var novoValorPropriedade:String = event.currentTarget.text;
+				
+				if (event.currentTarget.text == textInput.text){
+					return;
+				}
+				
+				if (despesa.atualizar()){
+					Alert.show("Despesa atualizada com sucesso", "Despesa atualizada");
+				}
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:columns>
+			<mx:AdvancedDataGridColumn headerText="Nome" dataField="nome">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:TextInput text="{data.nome}" />
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+			
+			<mx:AdvancedDataGridColumn headerText="Valor (R$)" dataField="valor" width="150">					
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:TextInput text="{Utils.formatarDinheiro(data.valor)}">
+							<mx:Script>
+								<![CDATA[
+									import com.spiel.Utils;
+								]]>
+							</mx:Script>
+						</mx:TextInput>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+						
+			<mx:AdvancedDataGridColumn width="35">
+				<mx:itemRenderer>
+					<mx:Component>
+						<mx:Button width="30" icon="@Embed(source='../resources/icones/delete.png')" toolTip="Remover despesa" click="outerDocument.removerDespesa(data.nome)"/>
+					</mx:Component>
+				</mx:itemRenderer>
+			</mx:AdvancedDataGridColumn>
+		</mx:columns>
+</mx:AdvancedDataGrid>
