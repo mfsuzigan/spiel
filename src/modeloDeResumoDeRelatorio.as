@@ -6,6 +6,9 @@ public var modeloResumoDeRelatorio:String = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\
 + " |       \\b Resumo de Movimenta\\'e7\\'f5es\\b0\\par"
 + "\\fs20 |\\par"
 + " |     \\b Abrang\\'eancia\\b0 : %abrangencia%\\par"
++ " | \\par"
++ " |     \\b Despesas fixas:\\b0  \\par"
++ " |	   %despesas%\\par"
 + " |     \\b Tarifa m\\'e9dia\\b0 : %tarifa%\\par"
 + " |     \\b Ve\\'edculos movimentados\\b0 : %nroMovimentados%\\par"
 + " |\\par"
@@ -22,7 +25,6 @@ public var modeloResumoDeRelatorio:String = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\
 + " |     \\b Pagantes s/ cr\\'e9dito:\\b0 \\par"
 + " |      %nroSemCredito% (%arrPagantes% arrecadados)\\par"
 + " | \\par"
-+ " | \\par"
 + " |     \\b Pagantes s/ cr\\'e9dito c/ cobr. na entrada:\\b0  \\par"
 + " |      %nroCobrEntrada% (%arrCobrEntrada% arrecadados)\\par"
 + " | \\par"
@@ -30,5 +32,4 @@ public var modeloResumoDeRelatorio:String = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\
 + " |      %nroCobrSaida% (%arrCobrSaida% arrecadados)\\par"
 + " | \\par"
 + " ---------------------------------------------------------------------\\par"
-+ "\\par"
 + "}";

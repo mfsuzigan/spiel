@@ -96,26 +96,58 @@ package com.spiel
 			
 			return true;
 		}
-			
-		public function atualizar():Boolean {
-			var sucesso:Boolean = false;
-						
-			var comandoInserir:String =
-				"UPDATE " + 
-				"DESPESAS_FIXAS " +
-				"SET NOME = '" + nome + "', VALOR = '" + valor + "' " +
-				"WHERE ID = " + id + " ";
+		
+		public function recuperar():void {
+			var comandoRecuperar:String =
+				"SELECT * " + 
+				"FROM DESPESAS_FIXAS " +
+				"WHERE NOME = '" + getNome() + "' ";				
 				
 			var stmt:SQLStatement = new SQLStatement();
 			stmt.sqlConnection = Conexao.get();
-			stmt.text = comandoInserir;
+			stmt.text = comandoRecuperar;
+			stmt.addEventListener(SQLEvent.RESULT, tratadora);
+			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
+			stmt.execute();
+			var r:SQLResult;
+		
+			function tratadora(event:SQLEvent):void
+			{
+				r = stmt.getResult();
+			
+				if (r is Object && r.data is Object)
+				{
+					setId(Number(r.data[0].ID.toString()));
+					setNome(r.data[0].NOME.toString());
+					setValor(Number(r.data[0].VALOR.toString()));	
+				}
+			}
+			
+			function tratadoraErro(event:SQLErrorEvent):void
+			{
+				Alert.show("Erro ao recuperar despesa no sistema: " + event.error.details);
+			}
+		}
+			
+		public function atualizar():Boolean {
+			var foiExecutadoComSucesso:Boolean = false;
+
+			var comandoAtualizar:String =
+				"UPDATE " + 
+				"DESPESAS_FIXAS " +
+				"SET NOME = '" + nome + "', VALOR = '" + valor + "' " +
+				"WHERE ID = " + id + " ";				
+				
+			var stmt:SQLStatement = new SQLStatement();
+			stmt.sqlConnection = Conexao.get();
+			stmt.text = comandoAtualizar;
 			stmt.addEventListener(SQLEvent.RESULT, tratadora);
 			stmt.addEventListener(SQLErrorEvent.ERROR, tratadoraErro);
 			stmt.execute();
 		
 			function tratadora(event:SQLEvent):void
 			{
-				sucesso = true;
+				foiExecutadoComSucesso = true;
 			}
 			
 			function tratadoraErro(event:SQLErrorEvent):void
@@ -123,28 +155,9 @@ package com.spiel
 				Alert.show("Erro ao atualizar despesa no sistema: " + event.error.details);
 			}
 			
-			return sucesso;
+			return foiExecutadoComSucesso;
 		}
-		
-		/*public static function nomeTemValidade(nome:String):Boolean {
-			var despesaTemValidade:Boolean = false;
 			
-			if (textInputComValor.name == "nome" && (Utils.stringIsBlank(textInputComValor.text) || !Utils.validarInput(textInputComValor))){
-				Alert.show("Nome da despesa inválido");
-				
-			} else if (textInputComValor.name == "valor" && (Utils.stringIsBlank(textInputComValor.text) || !Utils.validarInputNumerico(textInputComValor))){
-				Alert.show("Valor da despesa inválido");
-				
-			} else if (textInputComValor.name == "nome" && obterDespesaPorNome(textInputComValor.text) != null){
-				Alert.show("Já existe uma despesa com este nome");
-				
-			} else {
-				despesaTemValidade = true;
-			}
-			
-			return despesaTemValidade;
-		}*/
-		
 		public static function valorTemValidade(valor:String):Boolean {
 			var valorTemValidade:Boolean = false;
 			
@@ -174,7 +187,51 @@ package com.spiel
 			
 			return nomeTemValidade;
 		}
+	
+	public function obterTodasAsDespesas():Array{
+		var comandoRecuperar:String = "" +
+						"SELECT * " +
+						"FROM DESPESAS_FIXAS;";
 		
+		var s:SQLStatement = new SQLStatement();	
+		s.text = comandoRecuperar;
+		s.sqlConnection = Conexao.get();
+		s.addEventListener(SQLEvent.RESULT, tratadoraRecuperar);
+		s.addEventListener(SQLErrorEvent.ERROR, tratadoraRecuperarErro);
+		var despesas:Array = new Array();
+		var r:SQLResult;
+		
+		try {
+			s.execute();
+		}
+		
+		catch (erro:Error) {
+			Alert.show("Erro ao recuperar despesas: " + erro.message);
+		}
+		
+		return despesas;
+		
+		function tratadoraRecuperar(event:SQLEvent):void
+		{
+			r = s.getResult();
+			
+			if (r is Object && r.data is Object)
+			{
+				for (var i:Number = 0; i < r.data.length; i++)
+				{
+					var despesa:DespesaFixa = new DespesaFixa();
+					despesa.setId(Number(r.data[i].ID.toString()));
+					despesa.setNome(r.data[i].NOME.toString());
+					despesa.setValor(Number(r.data[i].VALOR.toString()));	
+					despesas.push(despesa);
+				}
+			}
+		}
+		
+		function tratadoraRecuperarErro(event:SQLErrorEvent):void {
+			Alert.show("Erro ao recuperar despesas: " + event.error.details);	
+		}
+	}
 		
 	public static function existeDespesaComONome(nomeDespesa:String):Boolean {
 		

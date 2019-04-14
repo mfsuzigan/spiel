@@ -1,5 +1,6 @@
 // ActionScript file
 
+import com.spiel.DespesaFixa;
 import com.spiel.Movimentacao;
 import com.spiel.Utils;
 import com.spiel.Veiculo;
@@ -139,6 +140,17 @@ public function salvarRelatorio():void
 	}	
 }
 
+public function formatarDespesas():String {
+	var despesasFormatadas:String = "";
+	
+	for each (var despesa:DespesaFixa in new DespesaFixa().obterTodasAsDespesas()){
+		despesasFormatadas += despesa.nome + " - R$ " + Utils.formatarDinheiro(despesa.valor.toString());
+		despesasFormatadas += "\\par |	   ";
+	}
+	
+	return despesasFormatadas == "" ? "N/A" : despesasFormatadas;
+}
+
 public function prepararRelatorio():String
 {	
 	var dataInicio:Date = inicio.selectedDate;
@@ -232,6 +244,11 @@ public function prepararRelatorio():String
 	regexPattern = /%tarifa%/g;
 	relatorioPronto = relatorioPronto.replace(regexPattern, tarifa);
 	Application.application.resumoDeRelatorio = Application.application.resumoDeRelatorio.replace(regexPattern, tarifa);
+	
+	regexPattern = /%despesas%/g;
+	var despesasFormatadas = formatarDespesas();
+//	relatorioPronto = relatorioPronto.replace(regexPattern, tarifa);
+	Application.application.resumoDeRelatorio = Application.application.resumoDeRelatorio.replace(regexPattern, despesasFormatadas);
 	
 	regexPattern = /%nroMovimentados%/g;
 	relatorioPronto = relatorioPronto.replace(regexPattern, nroMovimentados);
@@ -371,7 +388,21 @@ public function prepararRelatorio():String
 		
 	} 
 	
+	relatorioPronto = adicionarDespesas(relatorioPronto);
 	relatorioPronto += "}";
 	
 	return relatorioPronto;	
+}
+
+private function adicionarDespesas(relatorio:String):String{
+	var linhasDespesas:String = "";
+	
+	for each (var despesa:DespesaFixa in new DespesaFixa().obterTodasAsDespesas()){
+		var linhaDespesa:String = linhaDespesaFixa.replace("%nomeDespesa%", despesa.getNome()).replace("%valorDespesa%", Utils.formatarDinheiro(despesa.getValor().toString()));
+		linhasDespesas += linhaDespesa;				
+	}
+	
+	relatorio = relatorio.replace("%linhasDespesas%", linhasDespesas);
+	
+	return relatorio;
 }

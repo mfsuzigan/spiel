@@ -3,6 +3,7 @@ package com.spiel
 	import mx.collections.ArrayCollection;
 	import mx.events.ValidationResultEvent;
 	import mx.validators.RegExpValidator;
+	import mx.validators.Validator;
 	
 	public class Utils
 	{
@@ -173,6 +174,11 @@ package com.spiel
 		{
 			return (RegExp)(/^\d+$/).test(string);
 		}
+		
+		public static function isMonetario(string:String):Boolean
+		{
+			return (RegExp)(/^\d+,\d\d$/).test(string);
+		}
 	
 		public static function dataFormatada(timestamp:String):String
 		{
@@ -259,6 +265,18 @@ package com.spiel
 		
 		public static function stringIsBlank(str:String):Boolean{
 			return str == null || str == "";
+		}
+	
+		public static function validarObrigatoriedadeInput(alvo:Object):Boolean
+		{
+			var validador:Validator = new Validator();
+			validador.required = true;
+			validador.requiredFieldError = "Obrigatório";
+			validador.source = alvo;
+			validador.property = "text";
+						
+			var resultEvent:ValidationResultEvent = validador.validate();
+			return (resultEvent.type == ValidationResultEvent.VALID);
 		}
 	
 		public static function validarInput(alvo:Object):Boolean

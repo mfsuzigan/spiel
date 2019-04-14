@@ -2,6 +2,7 @@
 <mx:AdvancedDataGrid xmlns:mx="http://www.adobe.com/2006/mxml">
 	<mx:Script>
 		<![CDATA[
+			import com.spiel.Utils;
 			import mx.controls.TextInput;
 			import mx.collections.ArrayCollection;
 			import mx.collections.ArrayList;
@@ -22,16 +23,28 @@
 				}
 			}
 			
-			public function atualizarDespesa(textInput:TextInput, data:Object, event:Event):void {
+			public function atualizarDespesa(propriedade:String, data:Object, event:Event, textInput:TextInput):void {
 				var despesa:DespesaFixa = (DespesaFixa)(data);
 				var novoValorPropriedade:String = event.currentTarget.text;
-				
-				if (event.currentTarget.text == textInput.text){
-					return;
+				var despesaFoiAtualizada:Boolean = false;
+								
+				if ("valor" == propriedade && Utils.validarInputNumerico(textInput) && despesa.getValor() != Utils.obterValorNumerico(novoValorPropriedade)) {
+					despesa.setValor(Utils.obterValorNumerico(novoValorPropriedade));
+					despesaFoiAtualizada = despesa.atualizar();														
+					
+				} else if ("nome" == propriedade && Utils.validarObrigatoriedadeInput(textInput) && Utils.validarInput(textInput) && despesa.getNome() != novoValorPropriedade)	{
+					
+					if (DespesaFixa.existeDespesaComONome(novoValorPropriedade)){
+						Alert.show("Já existe uma despesa com este nome");
+						
+					} else {					
+						despesa.setNome(novoValorPropriedade);
+						despesaFoiAtualizada = despesa.atualizar();
+					}
 				}
 				
-				if (despesa.atualizar()){
-					Alert.show("Despesa atualizada com sucesso", "Despesa atualizada");
+				if (despesaFoiAtualizada){
+					Alert.show("Despesa atualizada com sucesso");
 				}
 				
 			}
@@ -41,7 +54,7 @@
 			<mx:AdvancedDataGridColumn headerText="Nome" dataField="nome">
 				<mx:itemRenderer>
 					<mx:Component>
-						<mx:TextInput text="{data.nome}" />
+						<mx:TextInput text="{data.nome}" focusOut="outerDocument.atualizarDespesa('nome', data, event, this)"/>
 					</mx:Component>
 				</mx:itemRenderer>
 			</mx:AdvancedDataGridColumn>
@@ -49,7 +62,7 @@
 			<mx:AdvancedDataGridColumn headerText="Valor (R$)" dataField="valor" width="150">					
 				<mx:itemRenderer>
 					<mx:Component>
-						<mx:TextInput text="{Utils.formatarDinheiro(data.valor)}">
+						<mx:TextInput text="{Utils.formatarDinheiro(data.valor)}" focusOut="outerDocument.atualizarDespesa('valor', data, event, this)">
 							<mx:Script>
 								<![CDATA[
 									import com.spiel.Utils;

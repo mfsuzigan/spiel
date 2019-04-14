@@ -51,12 +51,6 @@ public function initConfiguracoes():void
 	if (accordionConfiguracoes.selectedIndex == 4 && inputTarifa is Object)	
 		inputTarifa.text = Utils.formatarDinheiro(Configuracoes.getTarifa());
 }
-
-//public function atualizarDespesas():void{
-//	
-//	tabelaDespesas.dataProvider = getDespesas();
-//}
-
 			
 public function adicionarDespesa():void {
 	var despesaTemValidade:Boolean = DespesaFixa.nomeTemValidade(inputNomeDespesa.text) && 
@@ -70,6 +64,7 @@ public function adicionarDespesa():void {
 		novaDespesa.valor = Utils.obterValorNumerico(inputValorDespesa.text);
 		
 		if (novaDespesa.inserir()){
+			novaDespesa.recuperar();			
 			(ArrayCollection)(tabelaDespesas.dataProvider).addItem(novaDespesa);
 			limparCamposDespesa();
 			Alert.show("Despesa adicionada com sucesso", "Despesa adicionada");
