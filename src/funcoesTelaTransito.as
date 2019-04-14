@@ -39,7 +39,6 @@ public var janelaCreditos:PainelEditarCredito;
 [Bindable]
 public var janelaDesfazer:PainelDesfazer;
 
-
 public function initTransito():void
 {
 }

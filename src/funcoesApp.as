@@ -61,6 +61,9 @@ public var resumoDeRelatorio:String;
 
 [Bindable]
 public var imprimirResumo:Boolean = false;
+
+[Bindable]
+public var informacoesMovimentacoesSaoExibidas:Boolean = true;
 //
 //[Bindable]
 //public var placasDeComprovantes:Array = new Array();
@@ -447,6 +450,26 @@ public function habilitarAplicacao():void
 	for (var i:Number = 0; i < children.length; i++)
 	{
 		(UIComponent)(children[i]).enabled = true;
+	}
+}
+
+public function toggleVisualizacaoInformacoesMovimentacao():void {
+	var childrenFrameEsquerdo:Array = Application.application.frameEsquerdo.getChildren();
+	var i:Number;
+	informacoesMovimentacoesSaoExibidas = !informacoesMovimentacoesSaoExibidas;
+	
+	for (i = 0; i < childrenFrameEsquerdo.length; i++)
+	{
+		if (childrenFrameEsquerdo[i] is PainelEsquerdo) {
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelCarrosNoPatioAgoraHoje.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelBaixasHoje.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelCarrosNoPatioAgoraHojeTexto.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelBaixasHoje.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelBaixasHojeTexto.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelTotalHojeTexto.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelTotalHoje.visible = informacoesMovimentacoesSaoExibidas;
+			(PainelEsquerdo) (childrenFrameEsquerdo[i]).labelDadosHoje.visible = informacoesMovimentacoesSaoExibidas;
+		}
 	}
 }
 

@@ -15,7 +15,7 @@
 	<mx:Label fontSize="12" id="labelBaixasHojeTexto" y="601" horizontalCenter="0" textAlign="center"/>
 	<mx:Label fontSize="12" id="labelTotalHojeTexto" y="687" horizontalCenter="0" textAlign="center" text="veículos movimentados"/>
 	<mx:Label toolTip="Total de veículos movimentados hoje" fontSize="36" fontWeight="bold" textAlign="center" id="labelTotalHoje" y="629" horizontalCenter="0"/>
-	<mx:Label text="Dados de hoje:" horizontalCenter="0" top="431"/>
+	<mx:Label text="Dados de hoje:" horizontalCenter="0" top="431" id="labelDadosHoje"/>
 	<!--<mx:Label toolTip="Dinheiro arrecadado hoje, exceto créditos e suas deduções" fontSize="36" fontWeight="bold" textAlign="center" id="labelArrecadacaoHoje" y="631" horizontalCenter="0"/>
 	<mx:Label fontSize="12" id="labelArrecadacaoHojeTexto" y="689" horizontalCenter="0"/>-->
 	<mx:VBox horizontalAlign="center" horizontalCenter="0" top="76">
